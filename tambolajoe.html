@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tambola Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0px;
+            background-color: #f1f1f1;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #f46d6d;
+            animation:blinking 1.5s infinite;
+            font-size: 45px;
+            min-height:30px;
+            max-width: 920px;
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 auto;
+            border-radius: 15px;
+            justify-content: center;
+            align-items: center;
+            }
+            @keyframes blinking {
+            50%{   color: rgb(35, 157, 233);   }
+            15%{   color: #000; } 
+            }
+
+        .container {
+            max-width: 1920px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .number-grid {
+            width: 65%;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-gap: 5px;
+            margin-top: 15px;
+            align-self: flex-start;
+        }
+
+        .number-button {
+            width: 100%;
+            height: 35px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .number-button.selected {
+            background-color: gray;
+            color: #bbbbbb;
+            text-decoration: line-through;
+        }
+
+        .roll-section {
+            display: 10;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .winner-section {
+            display: 10;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .roll-button {
+            padding: 10px 120px;
+            font-size: 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            margin-right: 60px;
+        }
+
+        .rolled-number {
+            font-size: 230px;
+            border: 1px solid #cccccc;
+            color:rgb(236, 113, 88);
+            text-align: center;
+            border-radius: 5px;
+            padding: 30px 40px;
+            margin-right: 60px;
+            margin-top: 20px;
+            animation:blinking 1.5s infinite;
+            }
+            @keyframes blinking {
+            50%{   color: rgb(35, 157, 233);   }
+            15%{   color: #000; } 
+            }
+
+        
+
+        .prize-board {
+            align-items: center;
+            display: grid;
+            width: 60%;
+            grid-template-columns: repeat(5, 1fr);
+            grid-gap: 10px;
+            margin-top: 20px;
+            align-self: flex-start;
+        }
+
+        .prize-button {
+            padding: 10px;
+            font-size: 14px;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .prize-button.selected {
+            text-decoration: line-through;
+            background-color: gray;
+            color: #bbbbbb;
+        }
+
+        .winner-form {
+            text-align: center;
+            margin-right: 20px;
+            align-self: flex-start;
+        }
+
+        .winner-form input[type="text"] {
+            width: 300px;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .winner-form button {
+            padding: 13px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+        }
+
+        .winner-table {
+            margin-top: 0px;
+            width: 50%;
+            font-size: 16px;
+            border-collapse: collapse;
+        }
+
+        .winner-table th,
+        .winner-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1 contenteditable="true">Tambola Game</h1>
+    <div class="container">
+        <script>
+            var selectedPrizes = [];
+            var rolledNumber = null;
+
+            function createNumberButtons() {
+                var numberGrid = document.getElementById("numberGrid");
+                for (var i = 1; i <= 99; i++) {
+                    var button = document.createElement("button");
+                    button.textContent = i;
+                    button.classList.add("number-button");
+                    numberGrid.appendChild(button);
+                }
+            }
+
+            function rollNumber() {
+                var numberGrid = document.getElementById("numberGrid");
+                var numberButtons = numberGrid.getElementsByClassName("number-button");
+                var availableNumbers = [];
+                for (var i = 0; i < numberButtons.length; i++) {
+                    if (!numberButtons[i].disabled) {
+                        availableNumbers.push(numberButtons[i]);
+                    }
+                }
+                if (availableNumbers.length > 0) {
+                    var randomIndex = Math.floor(Math.random() * availableNumbers.length);
+                    var rolledButton = availableNumbers[randomIndex];
+                    var rolledNumberElement = document.getElementById("rolledNumber");
+                    var number = rolledButton.textContent;
+                    rolledNumberElement.textContent = number;
+                    highlightNumberInTable(number);
+                    rolledButton.disabled = true;
+                    rolledButton.classList.add("selected");
+                    rolledNumber = number;
+                }
+            }
+
+            function highlightNumberInTable(number) {
+                var numberGrid = document.getElementById("numberGrid");
+                var numberButtons = numberGrid.getElementsByClassName("number-button");
+                for (var i = 0; i < numberButtons.length; i++) {
+                    if (numberButtons[i].textContent === number) {
+                        numberButtons[i].classList.add("selected");
+                    }
+                }
+            }
+
+            function showPrizeDialog() {
+                var numPrizes = prompt("Enter the number of prizes:");
+                if (numPrizes) {
+                    numPrizes = parseInt(numPrizes);
+                    if (isNaN(numPrizes) || numPrizes <= 0) {
+                        alert("Invalid number of prizes. Please enter a positive integer.");
+                        return;
+                    }
+                    for (var i = 0; i < numPrizes; i++) {
+                        var prizeName = prompt("Enter the name for Prize " + (i + 1) + ":");
+                        if (prizeName) {
+                            selectedPrizes.push(prizeName);
+                        } else {
+                            alert("Prize name cannot be empty. Please enter a valid name.");
+                            return;
+                        }
+                    }
+                    updatePrizeBoard();
+                }
+            }
+
+            function updatePrizeBoard() {
+                var prizeBoard = document.getElementById("prizeBoard");
+                prizeBoard.innerHTML = "";
+                for (var i = 0; i < selectedPrizes.length; i++) {
+                    var button = document.createElement("button");
+                    button.textContent = selectedPrizes[i];
+                    button.classList.add("prize-button");
+                    button.onclick = function() {
+                        selectPrize(this);
+                    };
+                    prizeBoard.appendChild(button);
+                }
+            }
+            function selectPrize(button) {
+                button.disabled = true;
+                button.classList.add("selected");
+            }
+            function addWinner() {
+                var winnerNameInput = document.getElementById("winnerName");
+                var winnerName = winnerNameInput.value.trim();
+                if (winnerName !== "") {
+                    var winnerTable = document.getElementById("winnerTable");
+                    var newRow = document.createElement("tr");
+                    var nameCell = document.createElement("td");
+                    nameCell.textContent = winnerName;
+                    newRow.appendChild(nameCell);
+                    winnerTable.appendChild(newRow);
+                    winnerNameInput.value = "";
+                } else{
+    alert("Please enter a valid winner name.");
+}
+            }
+
+            // Call the function to create number buttons and show the prize dialog on page load
+            window.onload = function() {
+                createNumberButtons();
+                showPrizeDialog();
+            };
+        </script>
+
+        <div class="roll-section">
+            <button class="roll-button" onclick="rollNumber()">Roll Number</button>
+            <div class="rolled-number" id="rolledNumber"></div>
+        </div>
+        <div class="number-grid" id="numberGrid"></div>
+        <div class="winner-section">
+            <div class="winner-form">
+                <input type="text" id="winnerName" placeholder="Enter Winner Name">
+                <button onclick="addWinner()">Add Winner</button>
+            </div>
+            <table class="winner-table" id="winnerTable">
+                <thead>
+                    <tr>
+                        <th>Winner Name</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>    
+        </div>
+        <div class="prize-board" id="prizeBoard"></div>
+        
+    </div>
+</body>
+</html>
