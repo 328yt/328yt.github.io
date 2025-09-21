@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Funky Tambola</title>
+    <title>Funky Tambola</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -11,10 +11,21 @@
         :root {
             --bg-start: #f0f7ff;
             --bg-end: #dceefc;
-            --primary-text: #0c4a6e;
-            --glass-bg: rgba(255, 255, 255, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.2);
+            --primary-text: #172e76;
+            --glass-hue: 205;
+            --glass-saturation: 79%;
+            --glass-lightness: 31%;
+            --glass-alpha: 0.4;
+            --button-hue: 205;
+            --button-saturation: 86%;
+            --button-lightness: 21%;
             --shadow-color: rgba(31, 38, 135, 0.1);
+
+            /* NEW: Text color variables for contrast */
+            --glass-text-color: #ffffff;
+            --button-text-color: #ffffff;
+            --called-number-text-color: #ffffff;
+            --theme-header-text-color: #ffffff;
         }
         html, body {
             overflow-x: hidden;
@@ -25,20 +36,26 @@
             color: var(--primary-text);
         }
         .liquid-glass {
-            background: var(--glass-bg);
+            background: hsla(var(--glass-hue), var(--glass-saturation), var(--glass-lightness), var(--glass-alpha));
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--glass-border);
+            border: 1px solid hsla(var(--glass-hue), var(--glass-saturation), 100%, 0.2);
             box-shadow: 0 8px 32px 0 var(--shadow-color);
+            color: var(--glass-text-color); /* Use contrast color */
         }
         .glass-button {
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            border: 1px solid hsla(var(--button-hue), var(--button-saturation), 100%, 0.18);
             box-shadow: 0 4px 12px 0 var(--shadow-color);
             transition: all 0.2s ease-in-out;
-            color: white;
+            color: var(--button-text-color); /* Use contrast color */
         }
-        .glass-button:hover { background-color: rgba(0, 0, 0, 0.1); }
+        .glass-button.primary {
+            background: hsla(var(--button-hue), var(--button-saturation), var(--button-lightness), 0.8);
+        }
+        .glass-button.primary:hover { 
+            background-color: hsla(var(--button-hue), var(--button-saturation), calc(var(--button-lightness) - 5%), 0.9); 
+        }
         .glass-button:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .prize-vis-grid {
@@ -46,18 +63,20 @@
             gap: 4px; background-color: rgba(0,0,0,0.05); padding: 8px; border-radius: 8px;
         }
         .prize-vis-cell { aspect-ratio: 1 / 1; border-radius: 4px; background-color: rgba(255, 255, 255, 0.5); }
-        .prize-vis-cell.active { background-color: #0ea5e9; }
+        .prize-vis-cell.active { background-color: hsla(var(--button-hue), var(--button-saturation), 50%, 1); }
 
         .dropdown { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.25, 0.1, 0.25, 1); }
         .dropdown.open { max-height: 500px; }
         
-        .number-cell.called { background: #0369a1; color: white; transform: scale(1.1); box-shadow: 0 0 15px rgba(3, 105, 161, 0.7); backdrop-filter: none; }
-        h1[contenteditable="true"]:focus { outline: none; box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.5); background: rgba(255, 255, 255, 0.4); }
+        .number-cell.called { background: hsla(var(--button-hue), var(--button-saturation), 35%, 1); color: var(--called-number-text-color); transform: scale(1.1); box-shadow: 0 0 15px hsla(var(--button-hue), var(--button-saturation), 35%, 0.7); backdrop-filter: none; }
+        
+        #game-title { color: var(--primary-text); }
+        #game-title:focus { outline: none; box-shadow: 0 0 0 2px hsla(var(--button-hue), var(--button-saturation), 50%, 0.5); background: rgba(255, 255, 255, 0.4); }
         
         .winner-scroll {
             position: fixed; top: 10px; left: 0; width: 100%;
-            background: rgba(14, 165, 233, 0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2); color: white;
+            background: hsla(var(--button-hue), var(--button-saturation), 50%, 0.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid hsla(var(--button-hue), var(--button-saturation), 100%, 0.2); color: white;
             font-size: clamp(0.9rem, 4vw, 1.5rem);
             font-weight: bold; padding: 12px 1rem;
             overflow: hidden; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -74,40 +93,76 @@
             header { margin-top: 0 !important; margin-bottom: 0.5rem !important; }
             h1 { font-size: 1.25rem !important; }
             .glass-button { padding: 0.25rem 0.75rem !important; font-size: 0.75rem !important; }
-            #info-button { padding: 0.5rem !important; }
+            #info-button, #theme-toggle-button { padding: 0.5rem !important; }
             main { gap: 0.5rem; }
             main > div { padding: 0.5rem !important; }
             #roll-button { padding: 0.5rem 1rem !important; font-size: 0.875rem !important; margin-top: 0.5rem !important; }
             .number-cell { font-weight: 500; }
             h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
-            
-            /* NEW: Makes add prize modal scrollable on short screens */
-            #add-prize-modal > div {
-                max-height: 90vh;
-                overflow-y: auto;
-            }
+            #add-prize-modal > div { max-height: 90vh; overflow-y: auto; }
         }
 
         @media (max-width: 767px) {
-            body {
-                padding-bottom: 15vh;
-            }
-             /* NEW: Gives the number panel a better shape on mobile portrait */
-            #numbers-panel {
-                aspect-ratio: 10 / 9;
-            }
+            body { padding-bottom: 15vh; }
+            #numbers-panel { aspect-ratio: 1 / 1; }
         }
 
+        #theme-switcher {
+            position: fixed; top: 80px; right: 20px; z-index: 101;
+        }
+        #theme-header {
+            cursor: move;
+            padding: 8px;
+            background-color: hsla(var(--button-hue), var(--button-saturation), 20%, 0.8);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            color: var(--theme-header-text-color);
+        }
+        .toggle-label {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 24px;
+        }
+        .toggle-label input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px; width: 16px;
+            left: 4px; bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .toggle-slider {
+            background-color: hsla(var(--button-hue), var(--button-saturation), 50%, 1);
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(16px);
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen md:h-screen md:overflow-hidden p-2 md:p-4 lg:p-6 pb-2 md:pb-6">
 
     <div id="winner-banner" class="winner-scroll flex justify-center items-center text-center"><span id="winner-banner-text"></span></div>
 
-    <header class="relative text-center my-4 flex justify-center items-center flex-shrink-0">
-        <button id="info-button" class="absolute left-0 top-1/2 -translate-y-1/2 glass-button p-2.5 rounded-full text-sm shadow-lg" style="background: rgba(71, 85, 105, 0.6);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg></button>
-        <h1 id="game-title" contenteditable="true" spellcheck="false" class="text-3xl md:text-4xl lg:text-5xl font-extrabold">Party Tambola</h1>
-        <div class="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2">
+    <header class="relative my-4 flex justify-between items-center flex-shrink-0 px-2 md:px-0">
+        <button id="info-button" class="glass-button p-2.5 rounded-full text-sm shadow-lg" style="background: rgba(71, 85, 105, 0.6);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg></button>
+        <h1 id="game-title" contenteditable="true" spellcheck="false" class="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-extrabold text-center flex-grow mx-2">Party Tambola</h1>
+        <div class="flex items-center gap-2">
+            <button id="theme-toggle-button" class="glass-button p-2.5 rounded-full text-sm shadow-lg" style="background: rgba(71, 85, 105, 0.6);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/><path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zM8 10.754a2.746 2.746 0 1 1 0-5.492 2.746 2.746 0 0 1 0 5.492z"/></svg></button>
             <button id="reset-button" class="glass-button font-bold py-2 px-4 rounded-full text-sm shadow-lg" style="background: rgba(183, 28, 28, 0.7);">New Game</button>
         </div>
     </header>
@@ -115,26 +170,70 @@
     <main class="flex flex-col md:flex-row flex-grow gap-4 md:min-h-0">
         <div id="numbers-panel" class="flex flex-col w-full md:w-7/12 lg:w-2/3 liquid-glass rounded-3xl p-4 md:min-h-0">
             <div class="flex-grow min-h-0 p-1"><div id="number-grid" class="grid grid-cols-10 grid-rows-9 gap-[2%] w-full h-full"></div></div>
-            <div class="flex-shrink-0 flex items-center justify-center gap-4 mt-4">
-                <button id="roll-button" class="glass-button font-bold py-3 px-8 rounded-full text-lg shadow-lg" style="background: rgba(14, 165, 233, 0.8);">Call Number</button>
+            <div class="flex-shrink-0 flex items-center justify-around gap-4 mt-4">
+                <div class="text-center liquid-glass rounded-full px-4 py-2">
+                    <div class="text-xs font-bold opacity-75">CALLED</div>
+                    <div id="called-count" class="text-xl font-extrabold">0</div>
+                </div>
+                <button id="roll-button" class="glass-button primary font-bold py-3 px-8 rounded-full text-lg shadow-lg">Call Number</button>
+                <div class="text-center liquid-glass rounded-full px-4 py-2">
+                    <div class="text-xs font-bold opacity-75">REMAINING</div>
+                    <div id="remaining-count" class="text-xl font-extrabold">90</div>
+                </div>
             </div>
         </div>
         <div id="prizes-panel" class="flex flex-col w-full md:w-5/12 lg:w-1/3 liquid-glass rounded-3xl p-4 md:min-h-0">
             <h2 class="text-2xl font-bold text-center mb-4 flex-shrink-0">Prizes</h2>
             <div id="prize-list" class="flex-grow space-y-3 md:overflow-y-auto pr-2"></div>
             <div class="flex-shrink-0 mt-4 pt-4 border-t border-white/30">
-                <button id="show-add-prize-modal-button" class="w-full mt-2 glass-button font-semibold py-2 px-4 rounded-lg shadow-md" style="background: rgba(1, 87, 155, 0.7);">+ Add Prize</button>
+                <button id="show-add-prize-modal-button" class="w-full mt-2 glass-button primary font-semibold py-2 px-4 rounded-lg shadow-md"> + Add Prize</button>
             </div>
         </div>
     </main>
 
     <!-- Modals -->
     <div id="modal-backdrop" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden z-40"></div>
-    <div id="number-modal" class="fixed inset-0 flex justify-center items-center hidden z-50"><div class="rounded-full w-48 h-48 md:w-64 md:h-64 flex justify-center items-center border-4 border-white/50 shadow-2xl" style="background: rgba(2, 119, 189, 0.9);"><span id="rolled-number-text" class="text-7xl md:text-9xl font-bold text-white"></span></div></div>
-    <div id="add-prize-modal" class="fixed inset-0 flex justify-center items-center hidden z-50 p-4"><div class="liquid-glass rounded-2xl p-6 w-full max-w-md text-center"><h3 class="text-xl font-bold mb-4">Add New Prize</h3><select id="prize-template-select" class="w-full p-2 rounded-lg liquid-glass focus:outline-none focus:ring-2 ring-sky-500 mb-2"><option value="custom">-- Select a Template --</option></select><input type="text" id="custom-prize-name" class="w-full p-2 rounded-lg liquid-glass focus:outline-none focus:ring-2 ring-sky-500 mb-2" placeholder="Or enter a custom name"><input type="text" id="prize-reward" class="w-full p-2 rounded-lg liquid-glass focus:outline-none focus:ring-2 ring-sky-500 mb-4" placeholder="Enter reward (e.g., $50)"><div id="prize-modal-vis-container" class="hidden"><p id="prize-modal-desc" class="text-sm italic mb-2"></p><div id="prize-modal-vis-grid" class="prize-vis-grid mx-auto w-full max-w-xs mb-4"></div></div><div class="flex gap-4 mt-4"><button id="add-prize-confirm" class="w-full glass-button font-semibold py-2 px-4 rounded-lg shadow-md" style="background: rgba(1, 87, 155, 0.7);">Add Prize</button><button id="add-prize-cancel" class="w-full glass-button font-semibold py-2 px-4 rounded-lg shadow-md" style="background: rgba(100, 116, 139, 0.6);">Cancel</button></div></div></div>
-    <div id="claim-modal" class="fixed inset-0 flex justify-center items-center hidden z-50 p-4"><div class="liquid-glass rounded-2xl p-6 w-full max-w-sm text-center"><h3 class="text-xl font-bold mb-4">Claim Prize: <span id="claim-prize-name"></span></h3><input type="text" id="winner-name-input" class="w-full p-2 rounded-lg liquid-glass focus:outline-none focus:ring-2 ring-sky-500" placeholder="Enter winner's name"><div class="flex gap-4 mt-4"><button id="confirm-claim-button" class="w-full glass-button font-semibold py-2 px-4 rounded-lg shadow-md" style="background: rgba(1, 87, 155, 0.7);">Confirm</button><button id="cancel-claim-button" class="w-full glass-button font-semibold py-2 px-4 rounded-lg shadow-md" style="background: rgba(100, 116, 139, 0.6);">Cancel</button></div></div></div>
+    <div id="number-modal" class="fixed inset-0 flex justify-center items-center hidden z-50"><div class="rounded-full w-48 h-48 md:w-64 md:h-64 flex justify-center items-center border-4 border-white/50 shadow-2xl" style="background: hsla(var(--button-hue), var(--button-saturation), 40%, 0.9);"><span id="rolled-number-text" class="text-7xl md:text-9xl font-bold text-white"></span></div></div>
+    <div id="add-prize-modal" class="fixed inset-0 flex justify-center items-center hidden z-50 p-4"><div class="liquid-glass rounded-2xl p-6 w-full max-w-md text-center"><h3 class="text-xl font-bold mb-4">Add New Prize</h3><select id="prize-template-select" class="w-full p-2 rounded-lg liquid-glass focus:outline-none focus:ring-2 ring-sky-500 mb-2"><option value="custom">-- Select a Template --</option></select><input type="text" id="custom-prize-name" class="w-full p-2 rounded-lg liquid-glass focus:outline-none focus:ring-2 ring-sky-500 mb-2" placeholder="Or enter a custom name"><input type="text" id="prize-reward" class="w-full p-2 rounded-lg liquid-glass focus:outline-none focus:ring-2 ring-sky-500 mb-4" placeholder="Enter reward (e.g., $50)"><div id="prize-modal-vis-container" class="hidden"><p id="prize-modal-desc" class="text-sm italic mb-2"></p><div id="prize-modal-vis-grid" class="prize-vis-grid mx-auto w-full max-w-xs mb-4"></div></div><div class="flex gap-4 mt-4"><button id="add-prize-confirm" class="w-full glass-button primary font-semibold py-2 px-4 rounded-lg shadow-md">Add Prize</button><button id="add-prize-cancel" class="w-full glass-button font-semibold py-2 px-4 rounded-lg shadow-md" style="background: rgba(100, 116, 139, 0.6);">Cancel</button></div></div></div>
+    <div id="claim-modal" class="fixed inset-0 flex justify-center items-center hidden z-50 p-4"><div class="liquid-glass rounded-2xl p-6 w-full max-w-sm text-center"><h3 class="text-xl font-bold mb-4">Claim Prize: <span id="claim-prize-name"></span></h3><input type="text" id="winner-name-input" class="w-full p-2 rounded-lg liquid-glass focus:outline-none focus:ring-2 ring-sky-500" placeholder="Enter winner's name"><div class="flex gap-4 mt-4"><button id="confirm-claim-button" class="w-full glass-button primary font-semibold py-2 px-4 rounded-lg shadow-md">Confirm</button><button id="cancel-claim-button" class="w-full glass-button font-semibold py-2 px-4 rounded-lg shadow-md" style="background: rgba(100, 116, 139, 0.6);">Cancel</button></div></div></div>
     <div id="reset-confirm-modal" class="fixed inset-0 flex justify-center items-center hidden z-50 p-4"><div class="liquid-glass rounded-2xl p-6 w-full max-w-sm text-center"><h3 class="text-xl font-bold mb-4">Start New Game?</h3><p class="mb-6">Are you sure? All current progress will be lost.</p><div class="flex gap-4 mt-4"><button id="confirm-reset-button" class="w-full glass-button font-semibold py-2 px-4 rounded-lg shadow-md" style="background: rgba(183, 28, 28, 0.7);">Yes, Reset</button><button id="cancel-reset-button" class="w-full glass-button font-semibold py-2 px-4 rounded-lg shadow-md" style="background: rgba(100, 116, 139, 0.6);">Cancel</button></div></div></div>
-    <div id="credits-modal" class="fixed inset-0 flex justify-center items-center hidden z-50 p-4"><div class="liquid-glass rounded-2xl p-6 w-full max-w-sm text-center"><h3 class="text-xl font-bold mb-4">Credits</h3><p class="mb-2">Created with ❤️ by</p><p class="text-2xl font-bold mb-6">328yt</p><button id="close-credits-button" class="w-full glass-button font-semibold py-2 px-4 rounded-lg shadow-md" style="background: rgba(100, 116, 139, 0.6);">Close</button></div></div>
+    <div id="credits-modal" class="fixed inset-0 flex justify-center items-center hidden z-50 p-4"><div class="liquid-glass rounded-2xl p-6 w-full max-w-sm text-center"><h3 class="text-xl font-bold mb-4">Credits</h3><p class="mb-2">made with ❤️ by</p><p class="text-2xl font-bold mb-6">328yt</p><button id="close-credits-button" class="w-full glass-button font-semibold py-2 px-4 rounded-lg shadow-md" style="background: rgba(100, 116, 139, 0.6);">Close</button></div></div>
+
+    <div id="theme-switcher" class="hidden w-48">
+        <div class="liquid-glass rounded-xl text-white overflow-hidden">
+            <div id="theme-header" class="text-center text-sm font-bold p-2">Theme</div>
+            <div class="p-4 space-y-4">
+                <div class="text-center">
+                    <label for="theme-color-picker" class="block text-xs font-medium mb-2">Theme Color</label>
+                    <input type="color" id="theme-color-picker" value="#0ea5e9" class="w-20 h-8 border-none cursor-pointer rounded-md">
+                </div>
+
+                <div class="flex items-center justify-center space-x-2">
+                    <span class="text-xs font-medium">Advanced</span>
+                    <label class="toggle-label">
+                        <input type="checkbox" id="advanced-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div id="advanced-theme-options" class="hidden space-y-4">
+                    <div class="text-center">
+                        <label for="title-color-picker" class="block text-xs font-medium mb-2">Title Color</label>
+                        <input type="color" id="title-color-picker" value="#0c4a6e" class="w-20 h-8 border-none cursor-pointer rounded-md">
+                    </div>
+                    <div class="text-center">
+                        <label for="glass-color-picker" class="block text-xs font-medium mb-2">Glass Color</label>
+                        <input type="color" id="glass-color-picker" value="#082f49" class="w-20 h-8 border-none cursor-pointer rounded-md">
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <label for="alpha-slider" class="block text-xs font-medium mb-1">Transparency</label>
+                    <input type="range" id="alpha-slider" min="0.1" max="0.9" step="0.05" value="0.4" class="w-full h-2 rounded-lg appearance-none cursor-pointer">
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -174,26 +273,35 @@
 
             const elements = {
                 numberGrid: document.getElementById('number-grid'), rollButton: document.getElementById('roll-button'), prizeList: document.getElementById('prize-list'), winnerBanner: document.getElementById('winner-banner'), winnerBannerText: document.getElementById('winner-banner-text'), modalBackdrop: document.getElementById('modal-backdrop'),
+                calledCount: document.getElementById('called-count'), remainingCount: document.getElementById('remaining-count'),
                 numberModal: { self: document.getElementById('number-modal'), text: document.getElementById('rolled-number-text'), },
                 addPrizeModal: { self: document.getElementById('add-prize-modal'), showButton: document.getElementById('show-add-prize-modal-button'), select: document.getElementById('prize-template-select'), nameInput: document.getElementById('custom-prize-name'), rewardInput: document.getElementById('prize-reward'), visContainer: document.getElementById('prize-modal-vis-container'), visGrid: document.getElementById('prize-modal-vis-grid'), desc: document.getElementById('prize-modal-desc'), confirmButton: document.getElementById('add-prize-confirm'), cancelButton: document.getElementById('add-prize-cancel'), },
                 claimModal: { self: document.getElementById('claim-modal'), prizeName: document.getElementById('claim-prize-name'), winnerInput: document.getElementById('winner-name-input'), confirmButton: document.getElementById('confirm-claim-button'), cancelButton: document.getElementById('cancel-claim-button'), },
                 resetModal: { self: document.getElementById('reset-confirm-modal'), showButton: document.getElementById('reset-button'), confirmButton: document.getElementById('confirm-reset-button'), cancelButton: document.getElementById('cancel-reset-button'), },
                 creditsModal: { self: document.getElementById('credits-modal'), showButton: document.getElementById('info-button'), closeButton: document.getElementById('close-credits-button'), },
+                theme: { switcher: document.getElementById('theme-switcher'), toggleButton: document.getElementById('theme-toggle-button'), header: document.getElementById('theme-header'), themeColorPicker: document.getElementById('theme-color-picker'), titleColorPicker: document.getElementById('title-color-picker'), glassColorPicker: document.getElementById('glass-color-picker'), alphaSlider: document.getElementById('alpha-slider'), advancedToggle: document.getElementById('advanced-toggle'), advancedOptions: document.getElementById('advanced-theme-options') }
             };
             
             const openModal = (modal) => { elements.modalBackdrop.classList.remove('hidden'); modal.classList.remove('hidden'); };
             const closeModal = (modal) => { elements.modalBackdrop.classList.add('hidden'); modal.classList.add('hidden'); };
             const generateVisGrid = (pattern) => { let html = ''; for (let i = 0; i < 27; i++) { html += `<div class="prize-vis-cell ${pattern.includes(i) ? 'active' : ''}"></div>`; } return html; };
 
-            const renderPrizes = () => { if (prizes.length === 0) { elements.prizeList.innerHTML = `<p class="text-center italic opacity-70">Add a prize to start!</p>`; return; } elements.prizeList.innerHTML = prizes.map(prize => `<div class="liquid-glass rounded-lg p-3 text-sm" data-id="${prize.id}"><div class="flex justify-between items-center cursor-pointer prize-toggle"><div class="flex-grow"><p class="font-bold">${prize.name}</p>${prize.claimed ? `<p class="text-xs italic opacity-90">Won by: ${prize.winner} <span class="font-semibold">(${prize.reward || 'Reward not set'})</span></p>` : `<p class="text-xs italic opacity-70">Reward: ${prize.reward || 'Not set'}</p>`}</div>${prize.claimed ? `<span class="text-lg font-bold text-green-500">✓</span>` : `<button class="claim-btn glass-button text-xs font-bold py-1 px-3 rounded-full" style="background: rgba(14, 165, 233, 0.8);">Claim</button>`}</div><div class="dropdown mt-2"><p class="text-xs mb-2 italic">${prize.desc}</p><div class="prize-vis-grid">${generateVisGrid(prize.pattern)}</div></div></div>`).join(''); };
-            const initializeGame = () => { elements.numberGrid.innerHTML = numbers.map(num => `<div id="num-${num}" class="number-cell flex justify-center items-center rounded-full liquid-glass text-sm md:text-base font-semibold">${num}</div>`).join(''); availableNumbers = [...numbers]; calledNumbers = []; elements.rollButton.disabled = false; elements.rollButton.textContent = "Call Number"; isRolling = false; prizes = []; renderPrizes(); };
+            const updateCounters = () => {
+                elements.calledCount.textContent = calledNumbers.length;
+                elements.remainingCount.textContent = availableNumbers.length;
+            };
+
+            const renderPrizes = () => { if (prizes.length === 0) { elements.prizeList.innerHTML = `<p class="text-center italic opacity-70">Add a prize to start!</p>`; return; } elements.prizeList.innerHTML = prizes.map(prize => `<div class="liquid-glass rounded-lg p-3 text-sm" data-id="${prize.id}"><div class="flex justify-between items-center cursor-pointer prize-toggle"><div class="flex-grow"><p class="font-bold">${prize.name}</p>${prize.claimed ? `<p class="text-xs italic opacity-90">Won by: ${prize.winner} <span class="font-semibold">(${prize.reward || 'Reward not set'})</span></p>` : `<p class="text-xs italic opacity-70">Reward: ${prize.reward || 'Not set'}</p>`}</div>${prize.claimed ? `<span class="text-lg font-bold text-green-500">✓</span>` : `<button class="claim-btn glass-button primary text-xs font-bold py-1 px-3 rounded-full">Claim</button>`}</div><div class="dropdown mt-2"><p class="text-xs mb-2 italic">${prize.desc}</p><div class="prize-vis-grid">${generateVisGrid(prize.pattern)}</div></div></div>`).join(''); };
+            const initializeGame = () => { elements.numberGrid.innerHTML = numbers.map(num => `<div id="num-${num}" class="number-cell flex justify-center items-center rounded-full liquid-glass text-sm md:text-base font-semibold">${num}</div>`).join(''); availableNumbers = [...numbers]; calledNumbers = []; elements.rollButton.disabled = false; elements.rollButton.textContent = "Call Number"; isRolling = false; prizes = []; renderPrizes(); updateCounters(); };
 
             async function rollNumber() {
                 if (elements.winnerBanner.classList.contains('show')) { hideBanner(); }
                 if (isRolling || availableNumbers.length === 0) return;
                 await Tone.start(); isRolling = true; elements.rollButton.disabled = true;
                 const rolledNumber = availableNumbers.splice(Math.floor(Math.random() * availableNumbers.length), 1)[0];
-                calledNumbers.push(rolledNumber); openModal(elements.numberModal.self);
+                calledNumbers.push(rolledNumber); 
+                updateCounters();
+                openModal(elements.numberModal.self);
                 elements.numberModal.text.classList.add('rolling-blur');
                 const rollInterval = setInterval(() => { const randNum = availableNumbers.length > 0 ? availableNumbers[Math.floor(Math.random() * availableNumbers.length)] : '...'; elements.numberModal.text.textContent = randNum; tickSynth.triggerAttackRelease("C6", "32n"); }, 75);
                 setTimeout(() => { clearInterval(rollInterval); elements.numberModal.text.textContent = rolledNumber; elements.numberModal.text.classList.remove('rolling-blur'); revealSynth.triggerAttackRelease("G5", "8n"); document.getElementById(`num-${rolledNumber}`).classList.add('called'); setTimeout(() => { closeModal(elements.numberModal.self); isRolling = false; if (availableNumbers.length === 0) { elements.rollButton.textContent = "Board Full!"; } else { elements.rollButton.disabled = false; } }, 2000); }, 1500);
@@ -211,6 +319,104 @@
                 elements.winnerBanner.classList.add('show');
                 bannerHideTimeout = setTimeout(hideBanner, 7000);
             }
+
+            // --- THEME CUSTOMIZER LOGIC ---
+            function hexToHSL(hex) {
+                let r = 0, g = 0, b = 0;
+                if (hex.length == 4) { r = "0x" + hex[1] + hex[1]; g = "0x" + hex[2] + hex[2]; b = "0x" + hex[3] + hex[3]; } else if (hex.length == 7) { r = "0x" + hex[1] + hex[2]; g = "0x" + hex[3] + hex[4]; b = "0x" + hex[5] + hex[6]; }
+                r /= 255; g /= 255; b /= 255;
+                let cmin = Math.min(r,g,b), cmax = Math.max(r,g,b), delta = cmax - cmin, h = 0, s = 0, l = 0;
+                if (delta == 0) h = 0; else if (cmax == r) h = ((g - b) / delta) % 6; else if (cmax == g) h = (b - r) / delta + 2; else h = (r - g) / delta + 4;
+                h = Math.round(h * 60); if (h < 0) h += 360;
+                l = (cmax + cmin) / 2; s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+                s = +(s * 100).toFixed(1); l = +(l * 100).toFixed(1);
+                return { h, s, l };
+            }
+
+            function getContrastColor(hex) {
+                if (hex.indexOf('#') === 0) { hex = hex.slice(1); }
+                if (hex.length === 3) { hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]; }
+                if (hex.length !== 6) { return '#000000'; } // default to black
+                const r = parseInt(hex.slice(0, 2), 16);
+                const g = parseInt(hex.slice(2, 4), 16);
+                const b = parseInt(hex.slice(4, 6), 16);
+                // Using the YIQ formula
+                const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+                return (yiq >= 128) ? '#0c4a6e' : '#FFFFFF';
+            }
+
+            function updateTheme() {
+                const isAdvanced = elements.theme.advancedToggle.checked;
+                const themeColor = elements.theme.themeColorPicker.value;
+                const alphaVal = elements.theme.alphaSlider.value;
+                
+                let buttonHsl = hexToHSL(themeColor);
+                document.documentElement.style.setProperty('--button-hue', buttonHsl.h);
+                document.documentElement.style.setProperty('--button-saturation', `${buttonHsl.s}%`);
+                document.documentElement.style.setProperty('--button-lightness', `${buttonHsl.l}%`);
+                document.documentElement.style.setProperty('--button-text-color', getContrastColor(themeColor));
+                document.documentElement.style.setProperty('--called-number-text-color', getContrastColor(themeColor));
+                document.documentElement.style.setProperty('--theme-header-text-color', getContrastColor(themeColor));
+                
+                if (isAdvanced) {
+                    const titleColorVal = elements.theme.titleColorPicker.value;
+                    const glassColorVal = elements.theme.glassColorPicker.value;
+                    let glassHsl = hexToHSL(glassColorVal);
+                    document.documentElement.style.setProperty('--glass-hue', glassHsl.h);
+                    document.documentElement.style.setProperty('--glass-saturation', `${glassHsl.s}%`);
+                    document.documentElement.style.setProperty('--glass-lightness', `${glassHsl.l}%`);
+                    document.documentElement.style.setProperty('--primary-text', titleColorVal);
+                    document.documentElement.style.setProperty('--glass-text-color', getContrastColor(glassColorVal));
+                } else {
+                    document.documentElement.style.setProperty('--glass-hue', buttonHsl.h);
+                    document.documentElement.style.setProperty('--glass-saturation', `79%`);
+                    document.documentElement.style.setProperty('--glass-lightness', `31%`);
+                    document.documentElement.style.setProperty('--primary-text', `hsl(${buttonHsl.h}, 79%, 20%)`);
+                    // This is tricky, we need to convert the HSL back to hex to check contrast
+                    // For simplicity, we assume the derived glass color is dark. A better solution would involve a full hsl->hex conversion.
+                    document.documentElement.style.setProperty('--glass-text-color', '#FFFFFF'); 
+                }
+                
+                document.documentElement.style.setProperty('--glass-alpha', alphaVal);
+            }
+            
+            function dragElement(elmnt) {
+                let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                const dragHeader = elements.theme.header;
+                dragHeader.onmousedown = dragMouseDown;
+                dragHeader.ontouchstart = dragMouseDown;
+
+                function dragMouseDown(e) {
+                    e = e || window.event;
+                    e.preventDefault();
+                    pos3 = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+                    pos4 = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+                    document.onmouseup = closeDragElement;
+                    document.onmousemove = elementDrag;
+                    document.ontouchend = closeDragElement;
+                    document.ontouchmove = elementDrag;
+                }
+
+                function elementDrag(e) {
+                    e = e || window.event;
+                    e.preventDefault();
+                    const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+                    pos1 = pos3 - clientX;
+                    pos2 = pos4 - clientY;
+                    pos3 = clientX;
+                    pos4 = clientY;
+                    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                }
+
+                function closeDragElement() {
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                    document.ontouchend = null;
+                    document.ontouchmove = null;
+                }
+            }
             
             // --- EVENT LISTENERS ---
             elements.addPrizeModal.showButton.addEventListener('click', () => { elements.addPrizeModal.select.value = 'custom'; elements.addPrizeModal.nameInput.value = ''; elements.addPrizeModal.rewardInput.value = ''; elements.addPrizeModal.visContainer.classList.add('hidden'); openModal(elements.addPrizeModal.self); });
@@ -225,8 +431,18 @@
             elements.resetModal.cancelButton.addEventListener('click', () => closeModal(elements.resetModal.self));
             elements.creditsModal.showButton.addEventListener('click', () => openModal(elements.creditsModal.self));
             elements.creditsModal.closeButton.addEventListener('click', () => closeModal(elements.creditsModal.self));
-            
             elements.rollButton.addEventListener('click', rollNumber);
+            elements.theme.toggleButton.addEventListener('click', () => elements.theme.switcher.classList.toggle('hidden'));
+            elements.theme.advancedToggle.addEventListener('change', () => {
+                elements.theme.advancedOptions.classList.toggle('hidden');
+                updateTheme();
+            });
+            elements.theme.themeColorPicker.addEventListener('input', updateTheme, false);
+            elements.theme.glassColorPicker.addEventListener('input', updateTheme, false);
+            elements.theme.titleColorPicker.addEventListener('input', updateTheme, false);
+            elements.theme.alphaSlider.addEventListener('input', updateTheme, false);
+            
+            dragElement(elements.theme.switcher);
             
             Object.keys(prizeTemplates).forEach(key => { const option = document.createElement('option'); option.value = key; option.textContent = prizeTemplates[key].name; elements.addPrizeModal.select.appendChild(option); });
             initializeGame();
