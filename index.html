@@ -11,17 +11,16 @@
         :root {
             --bg-start: #f0f7ff;
             --bg-end: #dceefc;
-            --primary-text: #172e76;
+            --primary-text: #0c1c6e;
             --glass-hue: 205;
             --glass-saturation: 79%;
             --glass-lightness: 31%;
             --glass-alpha: 0.4;
             --button-hue: 205;
             --button-saturation: 86%;
-            --button-lightness: 21%;
+            --button-lightness: 51%;
             --shadow-color: rgba(31, 38, 135, 0.1);
 
-            /* NEW: Text color variables for contrast */
             --glass-text-color: #ffffff;
             --button-text-color: #ffffff;
             --called-number-text-color: #ffffff;
@@ -41,14 +40,14 @@
             -webkit-backdrop-filter: blur(24px);
             border: 1px solid hsla(var(--glass-hue), var(--glass-saturation), 100%, 0.2);
             box-shadow: 0 8px 32px 0 var(--shadow-color);
-            color: var(--glass-text-color); /* Use contrast color */
+            color: var(--glass-text-color);
         }
         .glass-button {
             backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             border: 1px solid hsla(var(--button-hue), var(--button-saturation), 100%, 0.18);
             box-shadow: 0 4px 12px 0 var(--shadow-color);
             transition: all 0.2s ease-in-out;
-            color: var(--button-text-color); /* Use contrast color */
+            color: var(--button-text-color);
         }
         .glass-button.primary {
             background: hsla(var(--button-hue), var(--button-saturation), var(--button-lightness), 0.8);
@@ -106,18 +105,7 @@
             body { padding-bottom: 15vh; }
             #numbers-panel { aspect-ratio: 1 / 1; }
         }
-
-        #theme-switcher {
-            position: fixed; top: 80px; right: 20px; z-index: 101;
-        }
-        #theme-header {
-            cursor: move;
-            padding: 8px;
-            background-color: hsla(var(--button-hue), var(--button-saturation), 20%, 0.8);
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
-            color: var(--theme-header-text-color);
-        }
+        
         .toggle-label {
             position: relative;
             display: inline-block;
@@ -160,7 +148,7 @@
 
     <header class="relative my-4 flex justify-between items-center flex-shrink-0 px-2 md:px-0">
         <button id="info-button" class="glass-button p-2.5 rounded-full text-sm shadow-lg" style="background: rgba(71, 85, 105, 0.6);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg></button>
-        <h1 id="game-title" contenteditable="true" spellcheck="false" class="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-extrabold text-center flex-grow mx-2">Party Tambola</h1>
+        <h1 id="game-title" contenteditable="true" spellcheck="false" class="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-extrabold text-center flex-grow mx-2">Tambola Party</h1>
         <div class="flex items-center gap-2">
             <button id="theme-toggle-button" class="glass-button p-2.5 rounded-full text-sm shadow-lg" style="background: rgba(71, 85, 105, 0.6);"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/><path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zM8 10.754a2.746 2.746 0 1 1 0-5.492 2.746 2.746 0 0 1 0 5.492z"/></svg></button>
             <button id="reset-button" class="glass-button font-bold py-2 px-4 rounded-full text-sm shadow-lg" style="background: rgba(183, 28, 28, 0.7);">New Game</button>
@@ -199,38 +187,71 @@
     <div id="reset-confirm-modal" class="fixed inset-0 flex justify-center items-center hidden z-50 p-4"><div class="liquid-glass rounded-2xl p-6 w-full max-w-sm text-center"><h3 class="text-xl font-bold mb-4">Start New Game?</h3><p class="mb-6">Are you sure? All current progress will be lost.</p><div class="flex gap-4 mt-4"><button id="confirm-reset-button" class="w-full glass-button font-semibold py-2 px-4 rounded-lg shadow-md" style="background: rgba(183, 28, 28, 0.7);">Yes, Reset</button><button id="cancel-reset-button" class="w-full glass-button font-semibold py-2 px-4 rounded-lg shadow-md" style="background: rgba(100, 116, 139, 0.6);">Cancel</button></div></div></div>
     <div id="credits-modal" class="fixed inset-0 flex justify-center items-center hidden z-50 p-4"><div class="liquid-glass rounded-2xl p-6 w-full max-w-sm text-center"><h3 class="text-xl font-bold mb-4">Credits</h3><p class="mb-2">made with ❤️ by</p><p class="text-2xl font-bold mb-6">328yt</p><button id="close-credits-button" class="w-full glass-button font-semibold py-2 px-4 rounded-lg shadow-md" style="background: rgba(100, 116, 139, 0.6);">Close</button></div></div>
 
-    <div id="theme-switcher" class="hidden w-48">
-        <div class="liquid-glass rounded-xl text-white overflow-hidden">
-            <div id="theme-header" class="text-center text-sm font-bold p-2">Theme</div>
-            <div class="p-4 space-y-4">
+    <div id="theme-switcher" class="fixed inset-0 flex justify-center items-center hidden z-50 p-4">
+        <div class="liquid-glass rounded-2xl p-6 w-full max-w-sm text-white">
+            <h3 class="text-xl font-bold mb-4 text-center">Settings</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between space-x-2">
+                    <span class="text-sm font-medium">Announce Numbers</span>
+                    <label class="toggle-label">
+                        <input type="checkbox" id="tts-toggle" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                 <div class="flex items-center justify-between space-x-2">
+                    <span class="text-sm font-medium">Say Number Phrases</span>
+                    <label class="toggle-label">
+                        <input type="checkbox" id="phrases-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="text-center">
+                    <label for="voice-select" class="block text-xs font-medium mb-1">Voice</label>
+                    <select id="voice-select" class="w-full p-1 rounded-md bg-white/30 text-xs text-slate-800 focus:outline-none"></select>
+                </div>
+                 <div class="text-center">
+                    <label for="speed-slider" class="block text-xs font-medium mb-1">Speech Speed</label>
+                    <input type="range" id="speed-slider" min="0.5" max="1.5" step="0.1" value="0.9" class="w-full h-2 rounded-lg appearance-none cursor-pointer">
+                </div>
+                 <button id="edit-phrases-button" class="w-full text-sm glass-button primary font-semibold py-1 px-2 rounded-md">Edit Phrases</button>
+                <hr class="border-white/20">
                 <div class="text-center">
                     <label for="theme-color-picker" class="block text-xs font-medium mb-2">Theme Color</label>
-                    <input type="color" id="theme-color-picker" value="#0ea5e9" class="w-20 h-8 border-none cursor-pointer rounded-md">
+                    <input type="color" id="theme-color-picker" value="#0ea5e9" class="mx-auto block w-20 h-8 border-none cursor-pointer rounded-md">
                 </div>
-
                 <div class="flex items-center justify-center space-x-2">
-                    <span class="text-xs font-medium">Advanced</span>
+                    <span class="text-sm font-medium">Advanced</span>
                     <label class="toggle-label">
                         <input type="checkbox" id="advanced-toggle">
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
-
                 <div id="advanced-theme-options" class="hidden space-y-4">
                     <div class="text-center">
                         <label for="title-color-picker" class="block text-xs font-medium mb-2">Title Color</label>
-                        <input type="color" id="title-color-picker" value="#0c4a6e" class="w-20 h-8 border-none cursor-pointer rounded-md">
+                        <input type="color" id="title-color-picker" value="#0c4a6e" class="mx-auto block w-20 h-8 border-none cursor-pointer rounded-md">
                     </div>
                     <div class="text-center">
                         <label for="glass-color-picker" class="block text-xs font-medium mb-2">Glass Color</label>
-                        <input type="color" id="glass-color-picker" value="#082f49" class="w-20 h-8 border-none cursor-pointer rounded-md">
+                        <input type="color" id="glass-color-picker" value="#082f49" class="mx-auto block w-20 h-8 border-none cursor-pointer rounded-md">
                     </div>
                 </div>
-
                 <div class="text-center">
                     <label for="alpha-slider" class="block text-xs font-medium mb-1">Transparency</label>
                     <input type="range" id="alpha-slider" min="0.1" max="0.9" step="0.05" value="0.4" class="w-full h-2 rounded-lg appearance-none cursor-pointer">
                 </div>
+                <button id="close-theme-button" class="w-full mt-4 glass-button font-semibold py-2 px-4 rounded-lg" style="background: rgba(100, 116, 139, 0.6);">Done</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="phrases-modal" class="fixed inset-0 flex justify-center items-center hidden z-50 p-4">
+        <div class="liquid-glass rounded-2xl p-6 w-full max-w-4xl text-center flex flex-col max-h-[90vh]">
+            <h3 class="text-xl font-bold mb-4">Edit Number Phrases</h3>
+            <div id="phrases-container" class="flex-grow overflow-y-auto bg-slate-100/50 rounded-lg p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            <div class="flex-shrink-0 mt-4 flex gap-4">
+                <button id="save-phrases-button" class="w-full glass-button primary font-semibold py-2 px-4 rounded-lg">Save</button>
+                <button id="cancel-phrases-button" class="w-full glass-button font-semibold py-2 px-4 rounded-lg" style="background: rgba(100, 116, 139, 0.6);">Cancel</button>
             </div>
         </div>
     </div>
@@ -242,7 +263,32 @@
             let isRolling = false; let activeClaimPrizeId = null;
             let bannerHideTimeout = null;
             const numbers = Array.from({ length: 90 }, (_, i) => i + 1);
+            let voices = [];
+            let selectedVoiceName = null;
+            let isTtsEnabled = true;
+            let isPhraseTtsEnabled = false;
+            let speechRate = 0.9;
+            let numberPhrases = {};
+            
+            // --- SOUNDS ---
+            const tickSynth = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.001, decay: 0.1, sustain: 0.1, release: 0.1 } }).toDestination();
+            const revealSynth = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.2, release: 0.2 } }).toDestination();
+            const winSynth = new Tone.PolySynth(Tone.Synth).toDestination();
 
+            // --- DOM ELEMENTS ---
+            const elements = {
+                numberGrid: document.getElementById('number-grid'), rollButton: document.getElementById('roll-button'), prizeList: document.getElementById('prize-list'), winnerBanner: document.getElementById('winner-banner'), winnerBannerText: document.getElementById('winner-banner-text'), modalBackdrop: document.getElementById('modal-backdrop'),
+                calledCount: document.getElementById('called-count'), remainingCount: document.getElementById('remaining-count'),
+                numberModal: { self: document.getElementById('number-modal'), text: document.getElementById('rolled-number-text'), },
+                addPrizeModal: { self: document.getElementById('add-prize-modal'), showButton: document.getElementById('show-add-prize-modal-button'), select: document.getElementById('prize-template-select'), nameInput: document.getElementById('custom-prize-name'), rewardInput: document.getElementById('prize-reward'), visContainer: document.getElementById('prize-modal-vis-container'), visGrid: document.getElementById('prize-modal-vis-grid'), desc: document.getElementById('prize-modal-desc'), confirmButton: document.getElementById('add-prize-confirm'), cancelButton: document.getElementById('add-prize-cancel'), },
+                claimModal: { self: document.getElementById('claim-modal'), prizeName: document.getElementById('claim-prize-name'), winnerInput: document.getElementById('winner-name-input'), confirmButton: document.getElementById('confirm-claim-button'), cancelButton: document.getElementById('cancel-claim-button'), },
+                resetModal: { self: document.getElementById('reset-confirm-modal'), showButton: document.getElementById('reset-button'), confirmButton: document.getElementById('confirm-reset-button'), cancelButton: document.getElementById('cancel-reset-button'), },
+                creditsModal: { self: document.getElementById('credits-modal'), showButton: document.getElementById('info-button'), closeButton: document.getElementById('close-credits-button'), },
+                theme: { switcher: document.getElementById('theme-switcher'), toggleButton: document.getElementById('theme-toggle-button'), closeButton: document.getElementById('close-theme-button'), themeColorPicker: document.getElementById('theme-color-picker'), titleColorPicker: document.getElementById('title-color-picker'), glassColorPicker: document.getElementById('glass-color-picker'), alphaSlider: document.getElementById('alpha-slider'), advancedToggle: document.getElementById('advanced-toggle'), advancedOptions: document.getElementById('advanced-theme-options'), ttsToggle: document.getElementById('tts-toggle'), voiceSelect: document.getElementById('voice-select'), phrasesToggle: document.getElementById('phrases-toggle'), speedSlider: document.getElementById('speed-slider'), editPhrasesButton: document.getElementById('edit-phrases-button') },
+                phrasesModal: { self: document.getElementById('phrases-modal'), container: document.getElementById('phrases-container'), saveButton: document.getElementById('save-phrases-button'), cancelButton: document.getElementById('cancel-phrases-button') }
+            };
+            
+            // --- FUNCTIONS ---
             const prizeTemplates = {
                 early_5: { name: "Early 5", desc: "First 5 numbers called.", pattern: [] },
                 four_corners: { name: "Four Corners", desc: "Top-left, top-right, bottom-left, bottom-right numbers.", pattern: [0, 8, 18, 26] },
@@ -266,52 +312,73 @@
                 center_line: { name: "Center Line", desc: "The middle number of each row.", pattern: [4, 13, 22] },
                 full_house: { name: "Full House", desc: "All 15 numbers on the ticket.", pattern: Array.from({ length: 27 }, (_, i) => i) },
             };
-
-            const tickSynth = new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.001, decay: 0.1, sustain: 0.1, release: 0.1 } }).toDestination();
-            const revealSynth = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.2, release: 0.2 } }).toDestination();
-            const winSynth = new Tone.PolySynth(Tone.Synth).toDestination();
-
-            const elements = {
-                numberGrid: document.getElementById('number-grid'), rollButton: document.getElementById('roll-button'), prizeList: document.getElementById('prize-list'), winnerBanner: document.getElementById('winner-banner'), winnerBannerText: document.getElementById('winner-banner-text'), modalBackdrop: document.getElementById('modal-backdrop'),
-                calledCount: document.getElementById('called-count'), remainingCount: document.getElementById('remaining-count'),
-                numberModal: { self: document.getElementById('number-modal'), text: document.getElementById('rolled-number-text'), },
-                addPrizeModal: { self: document.getElementById('add-prize-modal'), showButton: document.getElementById('show-add-prize-modal-button'), select: document.getElementById('prize-template-select'), nameInput: document.getElementById('custom-prize-name'), rewardInput: document.getElementById('prize-reward'), visContainer: document.getElementById('prize-modal-vis-container'), visGrid: document.getElementById('prize-modal-vis-grid'), desc: document.getElementById('prize-modal-desc'), confirmButton: document.getElementById('add-prize-confirm'), cancelButton: document.getElementById('add-prize-cancel'), },
-                claimModal: { self: document.getElementById('claim-modal'), prizeName: document.getElementById('claim-prize-name'), winnerInput: document.getElementById('winner-name-input'), confirmButton: document.getElementById('confirm-claim-button'), cancelButton: document.getElementById('cancel-claim-button'), },
-                resetModal: { self: document.getElementById('reset-confirm-modal'), showButton: document.getElementById('reset-button'), confirmButton: document.getElementById('confirm-reset-button'), cancelButton: document.getElementById('cancel-reset-button'), },
-                creditsModal: { self: document.getElementById('credits-modal'), showButton: document.getElementById('info-button'), closeButton: document.getElementById('close-credits-button'), },
-                theme: { switcher: document.getElementById('theme-switcher'), toggleButton: document.getElementById('theme-toggle-button'), header: document.getElementById('theme-header'), themeColorPicker: document.getElementById('theme-color-picker'), titleColorPicker: document.getElementById('title-color-picker'), glassColorPicker: document.getElementById('glass-color-picker'), alphaSlider: document.getElementById('alpha-slider'), advancedToggle: document.getElementById('advanced-toggle'), advancedOptions: document.getElementById('advanced-theme-options') }
-            };
-            
             const openModal = (modal) => { elements.modalBackdrop.classList.remove('hidden'); modal.classList.remove('hidden'); };
             const closeModal = (modal) => { elements.modalBackdrop.classList.add('hidden'); modal.classList.add('hidden'); };
             const generateVisGrid = (pattern) => { let html = ''; for (let i = 0; i < 27; i++) { html += `<div class="prize-vis-cell ${pattern.includes(i) ? 'active' : ''}"></div>`; } return html; };
-
-            const updateCounters = () => {
-                elements.calledCount.textContent = calledNumbers.length;
-                elements.remainingCount.textContent = availableNumbers.length;
-            };
-
+            const updateCounters = () => { elements.calledCount.textContent = calledNumbers.length; elements.remainingCount.textContent = availableNumbers.length; };
             const renderPrizes = () => { if (prizes.length === 0) { elements.prizeList.innerHTML = `<p class="text-center italic opacity-70">Add a prize to start!</p>`; return; } elements.prizeList.innerHTML = prizes.map(prize => `<div class="liquid-glass rounded-lg p-3 text-sm" data-id="${prize.id}"><div class="flex justify-between items-center cursor-pointer prize-toggle"><div class="flex-grow"><p class="font-bold">${prize.name}</p>${prize.claimed ? `<p class="text-xs italic opacity-90">Won by: ${prize.winner} <span class="font-semibold">(${prize.reward || 'Reward not set'})</span></p>` : `<p class="text-xs italic opacity-70">Reward: ${prize.reward || 'Not set'}</p>`}</div>${prize.claimed ? `<span class="text-lg font-bold text-green-500">✓</span>` : `<button class="claim-btn glass-button primary text-xs font-bold py-1 px-3 rounded-full">Claim</button>`}</div><div class="dropdown mt-2"><p class="text-xs mb-2 italic">${prize.desc}</p><div class="prize-vis-grid">${generateVisGrid(prize.pattern)}</div></div></div>`).join(''); };
             const initializeGame = () => { elements.numberGrid.innerHTML = numbers.map(num => `<div id="num-${num}" class="number-cell flex justify-center items-center rounded-full liquid-glass text-sm md:text-base font-semibold">${num}</div>`).join(''); availableNumbers = [...numbers]; calledNumbers = []; elements.rollButton.disabled = false; elements.rollButton.textContent = "Call Number"; isRolling = false; prizes = []; renderPrizes(); updateCounters(); };
+
+            function speak(text, onEndCallback) {
+                if (!isTtsEnabled || !('speechSynthesis' in window)) {
+                    if (onEndCallback) onEndCallback();
+                    return;
+                }
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                if (selectedVoiceName) {
+                    const selectedVoice = voices.find(voice => voice.name === selectedVoiceName);
+                    if (selectedVoice) utterance.voice = selectedVoice;
+                }
+                utterance.rate = speechRate;
+                utterance.onend = onEndCallback;
+                window.speechSynthesis.speak(utterance);
+            }
 
             async function rollNumber() {
                 if (elements.winnerBanner.classList.contains('show')) { hideBanner(); }
                 if (isRolling || availableNumbers.length === 0) return;
                 await Tone.start(); isRolling = true; elements.rollButton.disabled = true;
+                
                 const rolledNumber = availableNumbers.splice(Math.floor(Math.random() * availableNumbers.length), 1)[0];
                 calledNumbers.push(rolledNumber); 
                 updateCounters();
+
+                const numberText = (rolledNumber < 10) ? `${rolledNumber}` : `${String(rolledNumber).split('').join(' ')}, ${rolledNumber}`;
+                const phrases = numberPhrases[rolledNumber] ? numberPhrases[rolledNumber].filter(p => p && p.trim() !== '') : [];
+                const phraseToSpeak = isPhraseTtsEnabled && phrases.length > 0 ? phrases[Math.floor(Math.random() * phrases.length)] : null;
+                
                 openModal(elements.numberModal.self);
                 elements.numberModal.text.classList.add('rolling-blur');
-                const rollInterval = setInterval(() => { const randNum = availableNumbers.length > 0 ? availableNumbers[Math.floor(Math.random() * availableNumbers.length)] : '...'; elements.numberModal.text.textContent = randNum; tickSynth.triggerAttackRelease("C6", "32n"); }, 75);
-                setTimeout(() => { clearInterval(rollInterval); elements.numberModal.text.textContent = rolledNumber; elements.numberModal.text.classList.remove('rolling-blur'); revealSynth.triggerAttackRelease("G5", "8n"); document.getElementById(`num-${rolledNumber}`).classList.add('called'); setTimeout(() => { closeModal(elements.numberModal.self); isRolling = false; if (availableNumbers.length === 0) { elements.rollButton.textContent = "Board Full!"; } else { elements.rollButton.disabled = false; } }, 2000); }, 1500);
+                const rollInterval = setInterval(() => {
+                    const randNum = availableNumbers.length > 0 ? availableNumbers[Math.floor(Math.random() * availableNumbers.length)] : '...';
+                    elements.numberModal.text.textContent = randNum;
+                    if (!isPhraseTtsEnabled) tickSynth.triggerAttackRelease("C6", "32n");
+                }, 75);
+
+                const revealNumber = () => {
+                    clearInterval(rollInterval); 
+                    elements.numberModal.text.textContent = rolledNumber; 
+                    elements.numberModal.text.classList.remove('rolling-blur'); 
+                    revealSynth.triggerAttackRelease("G5", "8n"); 
+                    document.getElementById(`num-${rolledNumber}`).classList.add('called'); 
+                    speak(numberText, () => {
+                        setTimeout(() => { 
+                            closeModal(elements.numberModal.self); 
+                            isRolling = false; 
+                            if (availableNumbers.length === 0) { elements.rollButton.textContent = "Board Full!"; } else { elements.rollButton.disabled = false; }
+                        }, 500);
+                    });
+                }
+                
+                if (phraseToSpeak) {
+                    speak(phraseToSpeak, revealNumber);
+                } else {
+                    setTimeout(revealNumber, 2000);
+                }
             }
 
-            const hideBanner = () => {
-                if(bannerHideTimeout) clearTimeout(bannerHideTimeout);
-                elements.winnerBanner.classList.remove('show');
-            };
-
+            const hideBanner = () => { if(bannerHideTimeout) clearTimeout(bannerHideTimeout); elements.winnerBanner.classList.remove('show'); };
             function showWinnerBanner(winner, prize) {
                 if(bannerHideTimeout) clearTimeout(bannerHideTimeout);
                 const bannerText = elements.winnerBannerText;
@@ -320,7 +387,7 @@
                 bannerHideTimeout = setTimeout(hideBanner, 7000);
             }
 
-            // --- THEME CUSTOMIZER LOGIC ---
+            // --- THEME CUSTOMIZER ---
             function hexToHSL(hex) {
                 let r = 0, g = 0, b = 0;
                 if (hex.length == 4) { r = "0x" + hex[1] + hex[1]; g = "0x" + hex[2] + hex[2]; b = "0x" + hex[3] + hex[3]; } else if (hex.length == 7) { r = "0x" + hex[1] + hex[2]; g = "0x" + hex[3] + hex[4]; b = "0x" + hex[5] + hex[6]; }
@@ -336,11 +403,10 @@
             function getContrastColor(hex) {
                 if (hex.indexOf('#') === 0) { hex = hex.slice(1); }
                 if (hex.length === 3) { hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]; }
-                if (hex.length !== 6) { return '#000000'; } // default to black
+                if (hex.length !== 6) { return '#000000'; }
                 const r = parseInt(hex.slice(0, 2), 16);
                 const g = parseInt(hex.slice(2, 4), 16);
                 const b = parseInt(hex.slice(4, 6), 16);
-                // Using the YIQ formula
                 const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
                 return (yiq >= 128) ? '#0c4a6e' : '#FFFFFF';
             }
@@ -349,7 +415,6 @@
                 const isAdvanced = elements.theme.advancedToggle.checked;
                 const themeColor = elements.theme.themeColorPicker.value;
                 const alphaVal = elements.theme.alphaSlider.value;
-                
                 let buttonHsl = hexToHSL(themeColor);
                 document.documentElement.style.setProperty('--button-hue', buttonHsl.h);
                 document.documentElement.style.setProperty('--button-saturation', `${buttonHsl.s}%`);
@@ -357,7 +422,6 @@
                 document.documentElement.style.setProperty('--button-text-color', getContrastColor(themeColor));
                 document.documentElement.style.setProperty('--called-number-text-color', getContrastColor(themeColor));
                 document.documentElement.style.setProperty('--theme-header-text-color', getContrastColor(themeColor));
-                
                 if (isAdvanced) {
                     const titleColorVal = elements.theme.titleColorPicker.value;
                     const glassColorVal = elements.theme.glassColorPicker.value;
@@ -372,11 +436,8 @@
                     document.documentElement.style.setProperty('--glass-saturation', `79%`);
                     document.documentElement.style.setProperty('--glass-lightness', `31%`);
                     document.documentElement.style.setProperty('--primary-text', `hsl(${buttonHsl.h}, 79%, 20%)`);
-                    // This is tricky, we need to convert the HSL back to hex to check contrast
-                    // For simplicity, we assume the derived glass color is dark. A better solution would involve a full hsl->hex conversion.
                     document.documentElement.style.setProperty('--glass-text-color', '#FFFFFF'); 
                 }
-                
                 document.documentElement.style.setProperty('--glass-alpha', alphaVal);
             }
             
@@ -385,37 +446,42 @@
                 const dragHeader = elements.theme.header;
                 dragHeader.onmousedown = dragMouseDown;
                 dragHeader.ontouchstart = dragMouseDown;
+                function dragMouseDown(e) { e = e || window.event; e.preventDefault(); pos3 = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX; pos4 = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY; document.onmouseup = closeDragElement; document.onmousemove = elementDrag; document.ontouchend = closeDragElement; document.ontouchmove = elementDrag; }
+                function elementDrag(e) { e = e || window.event; e.preventDefault(); const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX; const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY; pos1 = pos3 - clientX; pos2 = pos4 - clientY; pos3 = clientX; pos4 = clientY; elmnt.style.top = (elmnt.offsetTop - pos2) + "px"; elmnt.style.left = (elmnt.offsetLeft - pos1) + "px"; }
+                function closeDragElement() { document.onmouseup = null; document.onmousemove = null; document.ontouchend = null; document.ontouchmove = null; }
+            }
 
-                function dragMouseDown(e) {
-                    e = e || window.event;
-                    e.preventDefault();
-                    pos3 = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
-                    pos4 = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
-                    document.onmouseup = closeDragElement;
-                    document.onmousemove = elementDrag;
-                    document.ontouchend = closeDragElement;
-                    document.ontouchmove = elementDrag;
+            // --- PHRASES MODAL ---
+            function populatePhrasesModal() {
+                const container = elements.phrasesModal.container;
+                container.innerHTML = '';
+                for (let i = 1; i <= 90; i++) {
+                    const phrases = numberPhrases[i] || ["", "", ""];
+                    const group = document.createElement('div');
+                    group.className = 'p-2 rounded-lg bg-white/50 space-y-1';
+                    group.innerHTML = `<label class="font-bold text-sm text-slate-700">${i}</label>`;
+                    for (let j = 0; j < 3; j++) {
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.className = 'w-full p-1 rounded text-xs text-slate-800 focus:outline-none focus:ring-1 ring-sky-500';
+                        input.value = phrases[j] || '';
+                        input.dataset.number = i;
+                        input.dataset.index = j;
+                        group.appendChild(input);
+                    }
+                    container.appendChild(group);
                 }
+            }
 
-                function elementDrag(e) {
-                    e = e || window.event;
-                    e.preventDefault();
-                    const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
-                    const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
-                    pos1 = pos3 - clientX;
-                    pos2 = pos4 - clientY;
-                    pos3 = clientX;
-                    pos4 = clientY;
-                    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-                }
-
-                function closeDragElement() {
-                    document.onmouseup = null;
-                    document.onmousemove = null;
-                    document.ontouchend = null;
-                    document.ontouchmove = null;
-                }
+            function savePhrases() {
+                const inputs = elements.phrasesModal.container.querySelectorAll('input');
+                inputs.forEach(input => {
+                    const num = input.dataset.number;
+                    const index = parseInt(input.dataset.index);
+                    if (!numberPhrases[num]) numberPhrases[num] = [];
+                    numberPhrases[num][index] = input.value.trim();
+                });
+                closeModal(elements.phrasesModal.self);
             }
             
             // --- EVENT LISTENERS ---
@@ -432,19 +498,48 @@
             elements.creditsModal.showButton.addEventListener('click', () => openModal(elements.creditsModal.self));
             elements.creditsModal.closeButton.addEventListener('click', () => closeModal(elements.creditsModal.self));
             elements.rollButton.addEventListener('click', rollNumber);
-            elements.theme.toggleButton.addEventListener('click', () => elements.theme.switcher.classList.toggle('hidden'));
+            elements.theme.toggleButton.addEventListener('click', () => openModal(elements.theme.switcher));
+            elements.theme.closeButton.addEventListener('click', () => closeModal(elements.theme.switcher));
             elements.theme.advancedToggle.addEventListener('change', () => {
                 elements.theme.advancedOptions.classList.toggle('hidden');
                 updateTheme();
             });
+            elements.theme.ttsToggle.addEventListener('change', (e) => { isTtsEnabled = e.target.checked; });
+            elements.theme.phrasesToggle.addEventListener('change', (e) => { isPhraseTtsEnabled = e.target.checked; });
+            elements.theme.voiceSelect.addEventListener('change', (e) => { selectedVoiceName = e.target.value; });
+            elements.theme.speedSlider.addEventListener('input', (e) => { speechRate = parseFloat(e.target.value); });
+            elements.theme.editPhrasesButton.addEventListener('click', () => { populatePhrasesModal(); openModal(elements.phrasesModal.self); });
+            elements.phrasesModal.saveButton.addEventListener('click', savePhrases);
+            elements.phrasesModal.cancelButton.addEventListener('click', () => closeModal(elements.phrasesModal.self));
             elements.theme.themeColorPicker.addEventListener('input', updateTheme, false);
             elements.theme.glassColorPicker.addEventListener('input', updateTheme, false);
             elements.theme.titleColorPicker.addEventListener('input', updateTheme, false);
             elements.theme.alphaSlider.addEventListener('input', updateTheme, false);
             
-            dragElement(elements.theme.switcher);
+            function populateVoiceList() {
+                voices = window.speechSynthesis.getVoices();
+                const voiceSelect = elements.theme.voiceSelect;
+                voiceSelect.innerHTML = '';
+                const englishVoices = voices.filter(voice => voice.lang.startsWith('en'));
+                englishVoices.forEach(voice => { const option = document.createElement('option'); option.textContent = `${voice.name} (${voice.lang})`; option.setAttribute('value', voice.name); voiceSelect.appendChild(option); });
+                let defaultVoice = englishVoices.find(voice => voice.lang === 'en-IN');
+                if (!defaultVoice) { defaultVoice = englishVoices.find(voice => voice.name === 'Google UK English Female'); }
+                if (!defaultVoice) { defaultVoice = englishVoices.find(voice => voice.name.includes('Google')); }
+                if (!defaultVoice && englishVoices.length > 0) { defaultVoice = englishVoices[0]; }
+                if (defaultVoice) { voiceSelect.value = defaultVoice.name; selectedVoiceName = defaultVoice.name; }
+            }
+            if ('onvoiceschanged' in window.speechSynthesis) {
+                window.speechSynthesis.onvoiceschanged = populateVoiceList;
+            }
+            populateVoiceList();
             
+            function loadDefaultPhrases() {
+                 numberPhrases = {"1":["Lone ranger","At the beginning","Start of the house"],"2":["Kaala dhan","One little duck","Me and you","table ke niche"],"3":["Happy family","Goodness me","Teen tigada kaam bigada"],"4":["Hum doh humare doh","Knock at the door","Murgi chor"],"5":["Man alive","Panchak number","High five","meri saas ke paanch putar"],"6":["Half a dozen","Tom's tricks","jai Mata Di"],"7":["Lucky seven","Saat phere","hockey stick"],"8":["Garden gate","Big fat lady","Kya hain thath baat"],"9":["Doctor's orders","Nau do gyarah","Fine wine"],"10":["Uncle's den","Perfect ten","Dus numbri"],"11":["Legs eleven","Ek aur ek gyarah","Two beautiful legs"],"12":["One dozen","Monkey's cousin","Barah baje"],"13":["Unlucky for some","Tera mera saath rahe"],"14":["Valentine's Day","Chaudah february"],"15":["Young and keen","Pandrah august"],"16":["Sweet sixteen","Solah saal"],"17":["Dancing queen","Satrah years"],"18":["Coming of age","vayask"],"19":["Goodbye teens","Unees number"],"20":["One score","Bees saal","Getting plenty"],"21":["Key of the door","Ikkees number"],"22":["Two little ducks","Dhai kilo ka haath","Do dobaara"],"23":["Thee and me","Teyees number"],"24":["Two dozen","Do duni chaar","Want some more"],"25":["Duck and dive","Pachees december"],"26":["Pick and mix","Republic Day","Chhabbis january"],"27":["Gateway to heaven","Sattaees number"],"28":["In a state","Atthaaees february"],"29":["Rise and shine","leap year"],"30":["Dirty Gertie","Tees number","Flirty thirty"],"31":["Get up and run","Kalkaji wale"],"32":["Buckle my shoe","Battees number"],"33":["Dirty knees","Taintees number","All the threes"],"34":["Ask for more","Chauntees number"],"35":["Jump and jive","Paintees number"],"36":["Three dozen","Chhattees ka ankda"],"37":["More than eleven","Saintees number"],"38":["Christmas cake","Bada pet"],"39":["Steps to heaven","teen tiya nau"],"40":["Life begins at","Naughty forty","Chaalees number"],"41":["Time for fun","Iktaalees number"],"42":["Winnie the Pooh","Bayaalees number"],"43":["Down on your knee","Taintaalees number"],"44":["Droopy drawers","Chavaalees number","All the fours"],"45":["Halfway there","half perpendicular"],"46":["Up to tricks","Chiyaalees number"],"47":["Four and seven","hame chahiye azaadi"],"48":["Four dozen","Aintaalees number"],"49":["Raising Year","Rise and shine"],"50":["Half century","Adhed umar","Bulls eye"],"51":["I love my mum","Ikyaavan number"],"52":["Taash ke patte","Pack of cards"],"53":["Stuck in the tree","Tirepaann number"],"54":["Clean the floor","Chauvaann number"],"55":["Snakes alive","Pachhpaann number","All the fives"],"56":["Was she worth it","Ab Tak Chhappaann"],"57":["Sattaavaann number"],"58":["Make them wait","Atthaawaann number"],"59":["Brighton line","Unsath number"],"60":["Five dozen","Retirement","Grandmas getting"],"61":["Bakers bun","Iksath number"],"62":["Turn the screw","Baasath number"],"63":["Tickle me","Tireesath number"],"64":["Red raw","Catch the chor"],"65":["Old age pension","Painsath number"],"66":["Clickety click","Chiyaasath number","All the sixes"],"67":["Made in heaven","Satsath number"],"68":["Saving grace","Adsath number"],"69":["Either way up","Ulta pulta"],"70":["Three score and ten","Stick and ball"],"71":["Bang on the drum","Ikhattar number"],"72":["Six dozen","Bahattar number"],"73":["Queen B","Tihattar number"],"74":["Candy store","Chauhattar number"],"75":["Strive and strive","Platinum Jubilee"],"76":["Trombones","Chhihattar number"],"77":["Sunset strip","Satte pe satta","All the sevens"],"78":["Heaven's gate","Athattar number"],"79":["One more time","Unnaasee number"],"80":["Eight and blank","Assee tussi"],"81":["Stop and run","Ikyaasee number"],"82":["Straight on through","Bayaasee number"],"83":["Time for tea","Tiraasee number"],"84":["Seven dozen","Chauraasee june"],"85":["Staying alive","Pachhaasee number"],"86":["Between the sticks","Chhiyaasee number"],"87":["Torquay in Devon","Sataasee number"],"88":["Two fat ladies","Athaasee number","All the eights"],"89":["Nearly there","Navaasee number"],"90":["Top of the house","Nabbe number","End of the line"]};
+            }
+            
+            // --- INITIALIZATION ---
             Object.keys(prizeTemplates).forEach(key => { const option = document.createElement('option'); option.value = key; option.textContent = prizeTemplates[key].name; elements.addPrizeModal.select.appendChild(option); });
+            loadDefaultPhrases();
             initializeGame();
         });
     </script>
