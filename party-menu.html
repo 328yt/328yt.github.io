@@ -3,47 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Our Party!</title>
+    <title>Party Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-                    body { margin: 0; padding: 2rem; font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1f2937; }
-                    .container { max-width: 800px; margin: auto; background: white; padding: 2rem 3rem; border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-                    h1 { font-family: 'Pacifico', cursive; color: #111827; font-size: 3.5rem; text-align: center; margin-bottom: 2rem; }
-                    .category { margin-bottom: 2.5rem; }
-                    h2 { font-size: 1.75rem; color: #4f46e5; border-bottom: 2px solid #e0e7ff; padding-bottom: 0.5rem; margin-bottom: 1rem; }
-                    ul { list-style: none; padding-left: 0; }
-                    li { font-size: 1.1rem; color: #374151; padding: 0.5rem 0; border-bottom: 1px solid #f3f4f6; }
-                    li:last-child { border-bottom: none; }
-                    footer { text-align: center; margin-top: 3rem; font-size: 0.8rem; color: #9ca3af; }
-                </style>
+        body {
+            font-family: 'Playfair Display', serif;
+            background-color: #f5f0e9; /* Slightly darker background */
+            color: #333;
+            padding: 2rem 0; /* Add vertical padding to the page */
+        }
+        #menu-container {
+            background-color: #F8F4EE; /* Original lighter color for the card */
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08); /* Softer, more pronounced shadow */
+            border: 1px solid #e9e0d6; /* A very subtle border */
+            border-radius: 0.5rem; /* Slightly rounded corners */
+        }
+        .subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: #a09386;
+            text-align: center;
+            margin-bottom: 0.25rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .main-menu-title {
+            font-family: 'Pinyon Script', cursive;
+            font-size: 5rem;
+            color: #555;
+            line-height: 1;
+        }
+        .category-header {
+            font-family: 'Pinyon Script', cursive;
+            font-size: 3.5rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+        .menu-item {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: #444;
+            line-height: 1.6;
+        }
+        .decoration-swirl {
+            display: block;
+            margin: 0 auto 1.5rem auto;
+            width: 150px;
+            height: auto;
+            stroke: #c2b0a0;
+            stroke-width: 1;
+            fill: none;
+        }
+        .decorative-divider {
+            display: block;
+            margin: 3rem auto;
+            width: 120px;
+            height: auto;
+            stroke: #d8c8b8;
+            fill: #d8c8b8;
+        }
+        .menu-item-list {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+        .menu-item-list li {
+            margin-bottom: 0.2rem;
+        }
+        .toggle-btn {
+            font-family: 'Playfair Display', serif;
+            padding: 0.5rem 1.5rem;
+            border: 1px solid #c2b0a0;
+            border-radius: 999px;
+            background-color: transparent;
+            color: #888;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .toggle-btn:hover {
+            background-color: #e9e0d6; /* Nicer hover color */
+            transform: translateY(-2px); /* Subtle lift effect */
+        }
+        .toggle-btn.active {
+            background-color: #c2b0a0;
+            color: #fff;
+            border-color: #c2b0a0;
+            transform: translateY(0);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .toggle-content {
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Welcome to Our Party!</h1>
+<body class="min-h-screen antialiased">
+
+    <div id="menu-container" class="text-gray-800 p-6 md:p-10 max-w-3xl mx-auto">
         
-                            <div class="category">
-                                <h2>Appetizers</h2>
-                                <ul><li>Mini Quiches</li><li>Bruschetta</li></ul>
-                            </div>
-                        
-                            <div class="category">
-                                <h2>Main Courses</h2>
-                                <ul><li>Gourmet Pizza</li><li>Pasta Alfredo</li></ul>
-                            </div>
-                        
-                            <div class="category">
-                                <h2>Desserts</h2>
-                                <ul><li>Chocolate Lava Cake</li></ul>
-                            </div>
-                        
-                            <div class="category">
-                                <h2>Drinks</h2>
-                                <ul><li>Sparkling Water</li><li>Craft Soda</li></ul>
-                            </div>
-                        
+        <svg class="decoration-swirl" viewBox="0 0 100 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 10 C 20 0, 30 0, 50 10 S 80 20, 100 10"/>
+        </svg>
+        <p class="subtitle">Officers' mess inauguration party</p>
+        <h1 class="main-menu-title text-center mb-6">the menu</h1>
+
+        <!-- DRINKS SECTION with Toggles -->
+        <div>
+            <h2 class="category-header text-center">Drinks</h2>
+            <div class="flex justify-center space-x-2 md:space-x-4 my-4">
+                <button class="toggle-btn active" data-group="drinks" data-target="non-alcoholic-drinks">Non-Alcoholic</button>
+                <button class="toggle-btn" data-group="drinks" data-target="alcoholic-drinks">Alcoholic</button>
+            </div>
+            <ul id="non-alcoholic-drinks" class="menu-item-list toggle-content" data-group="drinks">
+                <li class="menu-item">Mojito</li>
+                <li class="menu-item">Hibiscus nojito</li>
+                <li class="menu-item">Real juice</li>
+                <li class="menu-item">Softdrinks</li>
+                <li class="menu-item">Lemon soda</li>
+            </ul>
+            <ul id="alcoholic-drinks" class="menu-item-list toggle-content hidden" data-group="drinks">
+                <li class="menu-item">Monkey shoulder</li>
+                <li class="menu-item">Black Label</li>
+                <li class="menu-item">VAT-69</li>
+                <li class="menu-item">Glenlivet</li>
+                <li class="menu-item">Smirnoff Vodka</li>
+                <li class="menu-item">Jameson</li>
+                <li class="menu-item">Teachers 50</li>
+                <li class="menu-item">Campari</li>
+                <li class="menu-item">100 pipers</li>
+                <li class="menu-item">Black Dog</li>
+                <li class="menu-item">Red Label</li>
+            </ul>
+        </div>
+
+        <svg class="decorative-divider" viewBox="0 0 100 5" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 2.5 L40 2.5 M60 2.5 L100 2.5 M45 2.5 C 47.5 0, 52.5 0, 55 2.5 C 52.5 5, 47.5 5, 45 2.5 Z" />
+        </svg>
+
+        <!-- SNACKS SECTION with Toggles -->
+        <div>
+            <h2 class="category-header text-center">Snacks</h2>
+            <div class="flex justify-center space-x-2 md:space-x-4 my-4">
+                <button class="toggle-btn active" data-group="snacks" data-target="veg-snacks">Veg</button>
+                <button class="toggle-btn" data-group="snacks" data-target="non-veg-snacks">Non-Veg</button>
+            </div>
+            <ul id="veg-snacks" class="menu-item-list toggle-content" data-group="snacks">
+                <li class="menu-item">Chimchurri paneer bombs</li>
+                <li class="menu-item">Methi garlic pakoda chaat</li>
+                <li class="menu-item">Veg galauti kebab</li>
+                <li class="menu-item">Paneer cigar rolls</li>
+                <li class="menu-item">Masala dry makhana</li>
+                <li class="menu-item">French fries</li>
+                <li class="menu-item">Steam veggies</li>
+            </ul>
+            <ul id="non-veg-snacks" class="menu-item-list toggle-content hidden" data-group="snacks">
+                <li class="menu-item">Amritsari fish</li>
+                <li class="menu-item">Cheesy chicken tikka</li>
+                <li class="menu-item">Afghani chilli chicken dry</li>
+            </ul>
+        </div>
+        
+        <svg class="decorative-divider" viewBox="0 0 100 5" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 2.5 L40 2.5 M60 2.5 L100 2.5 M45 2.5 C 47.5 0, 52.5 0, 55 2.5 C 52.5 5, 47.5 5, 45 2.5 Z" />
+        </svg>
+
+        <!-- MAIN COURSE SECTION with Toggles -->
+        <div>
+            <h2 class="category-header text-center">Main Course</h2>
+            <div class="flex justify-center space-x-2 md:space-x-4 my-4">
+                <button class="toggle-btn active" data-group="main-course" data-target="veg-main-course">Veg</button>
+                <button class="toggle-btn" data-group="main-course" data-target="non-veg-main-course">Non-Veg</button>
+            </div>
+            <ul id="veg-main-course" class="menu-item-list toggle-content" data-group="main-course">
+                <li class="menu-item">Hot garlic tomato soup</li>
+                <li class="menu-item">Malai kofta</li>
+                <li class="menu-item">Veg jalfrezi</li>
+                <li class="menu-item">Amritsari stuffed Nan</li>
+                <li class="menu-item">Dal makhani</li>
+                <li class="menu-item">Kashmiri pulao</li>
+                <li class="menu-item">Rumali roti</li>
+                <li class="menu-item">Assorted Salad</li>
+            </ul>
+            <ul id="non-veg-main-course" class="menu-item-list toggle-content hidden" data-group="main-course">
+                <li class="menu-item">Pathani gosht</li>
+            </ul>
+        </div>
+
+        <svg class="decorative-divider" viewBox="0 0 100 5" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 2.5 L40 2.5 M60 2.5 L100 2.5 M45 2.5 C 47.5 0, 52.5 0, 55 2.5 C 52.5 5, 47.5 5, 45 2.5 Z" />
+        </svg>
+
+        <!-- SWEETS (No toggle) -->
+        <div class="pb-4">
+            <h2 class="category-header text-center">Sweets</h2>
+            <ul class="menu-item-list">
+                <li class="menu-item">Rasmalai</li>
+                <li class="menu-item">Shahi tukda</li>
+            </ul>
+        </div>
     </div>
-    <footer><p>Menu created with Party Menu Generator</p></footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleButtons = document.querySelectorAll('.toggle-btn');
+
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const group = button.dataset.group;
+                    const targetId = button.dataset.target;
+
+                    // Handle active state for buttons in the same group
+                    document.querySelectorAll(`.toggle-btn[data-group="${group}"]`).forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    button.classList.add('active');
+
+                    // Handle visibility for content in the same group
+                    document.querySelectorAll(`.toggle-content[data-group="${group}"]`).forEach(content => {
+                        if (!content.classList.contains('hidden')) {
+                           content.classList.add('hidden');
+                        }
+                    });
+                    document.getElementById(targetId).classList.remove('hidden');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
+
