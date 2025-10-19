@@ -255,6 +255,45 @@
         #export-pdf-btn:hover {
             background-color: var(--green-accent-hover);
         }
+
+        /* --- Responsive Design for Mobile --- */
+        @media (max-width: 480px) {
+            body {
+                padding: 20px 15px;
+            }
+
+            .container {
+                padding: 24px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+            
+            .subtitle {
+                font-size: 15px;
+                margin-bottom: 24px;
+            }
+
+            .qr-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .qr-info {
+                width: 100%;
+            }
+
+            .action-btn-group {
+                flex-wrap: wrap;
+            }
+
+            .remove-btn {
+                top: 12px;
+                right: 12px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -445,4 +484,5 @@
 
 </body>
 </html>
+
 
