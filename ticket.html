@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Tambola Pro</title>
+    
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+      /* Font Stack */
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&family=VT323&family=Architects+Daughter&family=Space+Mono:wght@700&display=swap');
+
+      :root {
+        --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        --ticket-scale: 1;
+      }
+
+      body {
+        font-family: var(--font-stack);
+        -webkit-tap-highlight-color: transparent;
+        overscroll-behavior-y: none; /* Prevent pull-to-refresh on mobile apps */
+      }
+
+      /* --- THEME DEFINITIONS --- */
+      [data-theme="light"] {
+        --bg-app: #F5F5F7;
+        --bg-card: #FFFFFF;
+        --text-primary: #1D1D1F;
+        --text-secondary: #86868B;
+        --accent: #007AFF;
+        --accent-rgb: 0, 122, 255;
+        --border-color: #E5E5EA;
+        --cell-bg: #FFFFFF;
+        --cell-hover: #F2F2F7;
+        --ticket-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      }
+
+      [data-theme="dark"] {
+        --bg-app: #000000;
+        --bg-card: #1C1C1E;
+        --text-primary: #FFFFFF;
+        --text-secondary: #98989D;
+        --accent: #0A84FF;
+        --accent-rgb: 10, 132, 255;
+        --border-color: #38383A;
+        --cell-bg: #2C2C2E;
+        --cell-hover: #3A3A3C;
+        --ticket-shadow: 0 4px 24px rgba(0,0,0,0.4);
+      }
+
+      [data-theme="cream"] {
+        --bg-app: #F0EAD6;
+        --bg-card: #FFFDF5;
+        --text-primary: #4A3B2A;
+        --text-secondary: #8C7B66;
+        --accent: #B06938;
+        --accent-rgb: 176, 105, 56;
+        --border-color: #D4C5B0;
+        --cell-bg: #FFFEFA;
+        --cell-hover: #EBE5D5;
+        --ticket-shadow: 0 4px 15px rgba(74, 59, 42, 0.1);
+      }
+
+      [data-theme="neon"] {
+        --bg-app: #050505;
+        --bg-card: #111111;
+        --text-primary: #00FF9C;
+        --text-secondary: #008F58;
+        --accent: #D900FF;
+        --accent-rgb: 217, 0, 255;
+        --border-color: #00331F;
+        --cell-bg: #000000;
+        --cell-hover: #0A0A0A;
+        --ticket-shadow: 0 0 15px rgba(0, 255, 156, 0.15);
+      }
+
+      [data-theme="midnight"] {
+        --bg-app: #0f172a;
+        --bg-card: #1e293b;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --accent: #fbbf24;
+        --accent-rgb: 251, 191, 36;
+        --border-color: #334155;
+        --cell-bg: #0f172a;
+        --cell-hover: #334155;
+        --ticket-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      }
+
+      [data-theme="forest"] {
+        --bg-app: #1a2f23;
+        --bg-card: #243c2f;
+        --text-primary: #e2e8f0;
+        --text-secondary: #94a3b8;
+        --accent: #4ade80;
+        --accent-rgb: 74, 222, 128;
+        --border-color: #2f4f3e;
+        --cell-bg: #14231b;
+        --cell-hover: #2f4f3e;
+        --ticket-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      }
+
+      [data-theme="sunset"] {
+        --bg-app: #4a1d24;
+        --bg-card: #7f2e38;
+        --text-primary: #ffd1d6;
+        --text-secondary: #eebec3;
+        --accent: #fcd34d;
+        --accent-rgb: 252, 211, 77;
+        --border-color: #9f3e4b;
+        --cell-bg: #4a1d24;
+        --cell-hover: #9f3e4b;
+        --ticket-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      }
+
+      [data-theme="ocean"] {
+        --bg-app: #ecfeff;
+        --bg-card: #ffffff;
+        --text-primary: #164e63;
+        --text-secondary: #67e8f9;
+        --accent: #0891b2;
+        --accent-rgb: 8, 145, 178;
+        --border-color: #cffafe;
+        --cell-bg: #f0f9ff;
+        --cell-hover: #e0f2fe;
+        --ticket-shadow: 0 4px 20px rgba(8, 145, 178, 0.15);
+      }
+
+      [data-theme="candy"] {
+        --bg-app: #fff1f2;
+        --bg-card: #fff;
+        --text-primary: #be185d;
+        --text-secondary: #f472b6;
+        --accent: #db2777;
+        --accent-rgb: 219, 39, 119;
+        --border-color: #fbcfe8;
+        --cell-bg: #fff;
+        --cell-hover: #fce7f3;
+        --ticket-shadow: 0 4px 20px rgba(219, 39, 119, 0.15);
+      }
+
+      [data-theme="retro"] {
+        --bg-app: #eaddcf;
+        --bg-card: #f3e9dc;
+        --text-primary: #5e503f;
+        --text-secondary: #8d7e6e;
+        --accent: #c8553d;
+        --accent-rgb: 200, 85, 61;
+        --border-color: #c2b2a0;
+        --cell-bg: #e6dec9;
+        --cell-hover: #dcd3b8;
+        --ticket-shadow: 2px 2px 0px rgba(94, 80, 63, 0.2);
+      }
+
+      /* --- UTILITIES --- */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      
+      /* Range Input Styling */
+      input[type=range] {
+        -webkit-appearance: none;
+        width: 100%;
+        background: transparent;
+      }
+      input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background: var(--accent);
+        margin-top: -6px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      }
+      input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        background: var(--border-color);
+        border-radius: 2px;
+      }
+
+      /* --- PRINT STYLES --- */
+      @media print {
+        @page { size: A4 portrait; margin: 10mm; }
+        
+        body {
+          background-color: white !important;
+          color: black !important;
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          font-family: sans-serif;
+        }
+
+        /* Hide EVERYTHING by default */
+        body > * { display: none !important; }
+        
+        /* Reveal Root Structure */
+        body > #root { display: block !important; }
+        #root > * { display: none !important; }
+        
+        /* Reveal Main Content */
+        #root > main {
+          display: block !important;
+          padding: 0 !important;
+          margin: 0 !important;
+          width: 100% !important;
+          max-width: none !important;
+        }
+
+        /* Reveal Ticket Container */
+        .print-container {
+          display: grid !important;
+          grid-template-columns: 1fr 1fr; /* 2 tickets per row */
+          gap: 20px;
+          width: 100%;
+          visibility: visible !important;
+        }
+        
+        /* Reveal Tickets */
+        .print-container > * {
+          display: block !important;
+          visibility: visible !important;
+        }
+
+        .ticket-wrapper {
+          break-inside: avoid;
+          page-break-inside: avoid;
+          margin-bottom: 0 !important;
+        }
+        
+        .ticket-meta {
+          color: #666 !important;
+          font-size: 8pt !important;
+          margin-bottom: 2px !important;
+          display: block !important;
+        }
+
+        .ticket-card {
+          box-shadow: none !important;
+          border: 1px solid #000 !important;
+          background: white !important;
+          color: black !important;
+          border-radius: 4px !important;
+          width: 100% !important;
+          transform: none !important;
+        }
+
+        .ticket-header {
+          background: #eee !important;
+          color: black !important;
+          border-bottom: 1px solid black !important;
+          padding: 4px 8px !important;
+        }
+        
+        .ticket-header * { color: black !important; }
+
+        .ticket-grid {
+          background: #000 !important;
+          gap: 1px !important;
+          border: 1px solid #000 !important;
+        }
+
+        .grid-cell {
+          background: white !important;
+          color: black !important;
+          font-weight: bold !important;
+          font-size: 14pt !important;
+          height: auto !important;
+          aspect-ratio: 1/1;
+        }
+        
+        /* Hide interactive elements */
+        .marked-indicator { display: none !important; }
+        .grid-cell.marked { background: white !important; }
+        .no-print { display: none !important; }
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/"
+  }
+}
+</script>
+</head>
+<body class="bg-[var(--bg-app)] text-[var(--text-primary)] transition-colors duration-300 min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel" data-presets="react,typescript">
+      const { useState, useEffect, useRef } = React;
+
+      // --- TYPES & CONSTANTS ---
+      type Theme = 'light' | 'dark' | 'cream' | 'neon' | 'midnight' | 'forest' | 'sunset' | 'ocean' | 'candy' | 'retro';
+      type TicketStyle = 'modern' | 'classic' | 'organic' | 'pixel' | 'minimal' | 'brutal' | 'glass' | 'sketch';
+
+      interface GameConfig {
+        playerName: string;
+        gameTitle: string;
+        ticketCount: number;
+        theme: Theme;
+        ticketStyle: TicketStyle;
+        activePrizes: string[];
+      }
+
+      type TicketMatrix = number[][]; // 3 rows x 9 cols
+
+      interface PrizeDefinition {
+        id: string;
+        name: string;
+        description: string;
+      }
+
+      const PRIZE_DATA: PrizeDefinition[] = [
+        { id: "Early 5", name: "Early 5", description: "Win by marking any 5 numbers first." },
+        { id: "Top Line", name: "Top Line", description: "Win by marking all numbers in the top row." },
+        { id: "Middle Line", name: "Middle Line", description: "Win by marking all numbers in the middle row." },
+        { id: "Bottom Line", name: "Bottom Line", description: "Win by marking all numbers in the bottom row." },
+        { id: "Full House", name: "Full House", description: "Win by marking every single number on the ticket." },
+        { id: "4 Corners", name: "4 Corners", description: "Mark the 1st and last numbers of the top and bottom rows." },
+        { id: "Temperature", name: "Temperature", description: "Mark the Smallest and the Largest number on the ticket." },
+        { id: "Breakfast", name: "Breakfast", description: "Win by marking all numbers in columns 1, 2, and 3." },
+        { id: "Lunch", name: "Lunch", description: "Win by marking all numbers in columns 4, 5, and 6." },
+        { id: "Dinner", name: "Dinner", description: "Win by marking all numbers in columns 7, 8, and 9." },
+        { id: "Jawaani", name: "Jawaani", description: "Mark all numbers between 1-49." },
+        { id: "Budhapa", name: "Budhapa", description: "Mark all numbers between 50-90." },
+        { id: "Queen's Corner", name: "Queen's Corner", description: "Mark the leftmost number of every row." },
+        { id: "King's Corner", name: "King's Corner", description: "Mark the rightmost number of every row." },
+        { id: "Bamboo", name: "Bamboo", description: "Mark the middle number (exact center) of every row." },
+        { id: "Pyramid", name: "Pyramid", description: "Top Mid, Mid Row 2&4, Bot Row 1,3,5." },
+        { id: "Star", name: "Star", description: "Mark the Center number plus the 4 Corner numbers." }
+      ];
+
+      const DEFAULT_PRIZES = ["Early 5", "Top Line", "Middle Line", "Bottom Line", "Full House"];
+
+      // --- SERVICES ---
+      const generateTicket = (): TicketMatrix => {
+        const cols: [number, number][] = [
+          [1, 9], [10, 19], [20, 29], [30, 39], [40, 49],
+          [50, 59], [60, 69], [70, 79], [80, 90]
+        ];
+
+        let ticket: number[][] = Array(3).fill(null).map(() => Array(9).fill(0));
+        const rowCounts = [0, 0, 0];
+        const colCounts = Array(9).fill(0);
+        
+        const rand = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+        // 1. Assign one number to each column
+        for(let c=0; c<9; c++) {
+           let r;
+           do { r = Math.floor(Math.random() * 3); } while (rowCounts[r] >= 5);
+           ticket[r][c] = rand(cols[c][0], cols[c][1]);
+           rowCounts[r]++;
+           colCounts[c]++;
+        }
+
+        // 2. Assign remaining 6 numbers
+        let numbersToPlace = 6;
+        while (numbersToPlace > 0) {
+          let c = Math.floor(Math.random() * 9);
+          if (colCounts[c] >= 2) continue; 
+
+          let availableRows = [];
+          for (let r = 0; r < 3; r++) {
+            if (ticket[r][c] === 0 && rowCounts[r] < 5) {
+              availableRows.push(r);
+            }
+          }
+
+          if (availableRows.length > 0) {
+            let r = availableRows[Math.floor(Math.random() * availableRows.length)];
+            let num = rand(cols[c][0], cols[c][1]);
+            
+            const existingInCol = [ticket[0][c], ticket[1][c], ticket[2][c]];
+            if (!existingInCol.includes(num)) {
+              ticket[r][c] = num;
+              rowCounts[r]++;
+              colCounts[c]++;
+              numbersToPlace--;
+            }
+          }
+        }
+
+        // 3. Sort columns
+        for (let c = 0; c < 9; c++) {
+          let nums = [];
+          for (let r = 0; r < 3; r++) {
+            if (ticket[r][c] !== 0) nums.push(ticket[r][c]);
+          }
+          nums.sort((a, b) => a - b);
+          
+          let idx = 0;
+          for (let r = 0; r < 3; r++) {
+            if (ticket[r][c] !== 0) {
+              ticket[r][c] = nums[idx++];
+            }
+          }
+        }
+
+        return ticket;
+      };
+
+      const generateTickets = (count: number): TicketMatrix[] => {
+        return Array.from({ length: count }, () => generateTicket());
+      };
+
+      // --- COMPONENT: CONFETTI ---
+      interface Particle {
+        x: number;
+        y: number;
+        vx: number;
+        vy: number;
+        txt: string;
+        age: number;
+        color: string;
+      }
+
+      const Confetti: React.FC = () => {
+        const canvasRef = useRef(null);
+
+        useEffect(() => {
+          const canvas = canvasRef.current;
+          if (!canvas) return;
+          
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return;
+
+          let animationFrameId: number;
+          
+          const resize = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+          };
+          window.addEventListener('resize', resize);
+          resize();
+
+          const emojis = ['🎉', '✨', '🏆', '💫', '💎', '🦄', '🔥'];
+          const colors = ['#FF2D55', '#007AFF', '#FFCC00', '#4CD964', '#5856D6'];
+          const particles: Particle[] = [];
+
+          // Create burst
+          for(let i=0; i<60; i++) {
+            particles.push({
+              x: canvas.width/2,
+              y: canvas.height/2,
+              vx: (Math.random()-0.5) * 25,
+              vy: (Math.random()-0.5) * 25,
+              txt: emojis[Math.floor(Math.random() * emojis.length)],
+              age: 0,
+              color: colors[Math.floor(Math.random() * colors.length)]
+            });
+          }
+
+          const animate = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let alive = false;
+
+            for (let i = 0; i < particles.length; i++) {
+              const p = particles[i];
+              p.x += p.vx;
+              p.y += p.vy;
+              p.vy += 0.8; 
+              p.vx *= 0.95; 
+              p.age++;
+
+              if (p.age < 80) {
+                ctx.font = `${Math.max(10, 30 - p.age * 0.3)}px serif`;
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = Math.max(0, 1 - p.age/80);
+                ctx.fillText(p.txt, p.x, p.y);
+                ctx.globalAlpha = 1;
+                alive = true;
+              }
+            }
+
+            if (alive) {
+              animationFrameId = requestAnimationFrame(animate);
+            } else {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+          };
+
+          animate();
+
+          return () => {
+            window.removeEventListener('resize', resize);
+            cancelAnimationFrame(animationFrameId);
+          };
+        }, []);
+
+        return (
+          <canvas 
+            ref={canvasRef} 
+            className="fixed top-0 left-0 w-full h-full pointer-events-none z-[100]"
+          />
+        );
+      };
+
+      // --- COMPONENT: TICKET ---
+      interface TicketProps {
+        id: number;
+        data: TicketMatrix;
+        gameTitle: string;
+        playerName: string;
+        markedCells: Set<string>;
+        onToggleCell: (row: number, col: number) => void;
+        accentColor: string;
+        scale?: number;
+        creationTime?: string;
+        style?: TicketStyle;
+      }
+
+      const Ticket: React.FC<TicketProps> = ({ 
+        id, 
+        data, 
+        gameTitle, 
+        playerName, 
+        markedCells, 
+        onToggleCell,
+        accentColor,
+        scale = 1,
+        creationTime,
+        style = 'modern'
+      }) => {
+
+        const getStyleClasses = () => {
+          switch (style) {
+            case 'classic':
+              return {
+                wrapper: 'font-serif',
+                card: 'rounded-none border-4 border-double border-[var(--text-primary)] bg-[#fffdf5] text-black',
+                header: 'border-b-2 border-black bg-transparent text-black',
+                grid: 'gap-0 border-2 border-black bg-black',
+                cell: 'bg-white hover:bg-gray-50 text-black',
+                idBadge: 'border border-black bg-transparent text-black'
+              };
+            case 'pixel':
+              return {
+                wrapper: 'font-[VT323] tracking-widest',
+                card: 'rounded-none border-4 border-[var(--text-primary)] bg-[var(--bg-card)] text-[var(--text-primary)]',
+                header: 'border-b-4 border-[var(--text-primary)] bg-[var(--text-primary)] text-[var(--bg-card)]',
+                grid: 'gap-1 bg-[var(--text-primary)] border-none',
+                cell: 'bg-[var(--bg-card)] hover:bg-[var(--bg-app)] text-[var(--text-primary)]',
+                idBadge: 'border-2 border-[var(--bg-card)] bg-[var(--bg-card)] text-[var(--text-primary)]'
+              };
+            case 'brutal':
+              return {
+                wrapper: 'font-[Space_Mono]',
+                card: 'rounded-none border-4 border-black bg-[var(--bg-card)] text-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]',
+                header: 'border-b-4 border-black bg-[var(--accent)] text-white',
+                grid: 'gap-1 bg-black border-none',
+                cell: 'bg-[var(--bg-card)] hover:bg-[var(--bg-app)] text-black font-bold',
+                idBadge: 'bg-black text-white px-2 rounded-none'
+              };
+            case 'glass':
+              return {
+                wrapper: 'font-sans',
+                card: 'rounded-2xl border-2 border-[var(--text-primary)]/20 bg-gradient-to-br from-[var(--bg-card)]/80 to-[var(--bg-card)]/30 backdrop-blur-xl shadow-2xl text-[var(--text-primary)]',
+                header: 'border-b border-[var(--text-primary)]/10 bg-[var(--text-primary)]/5',
+                grid: 'gap-px bg-[var(--text-primary)]/10 border-y border-[var(--text-primary)]/10',
+                cell: 'bg-[var(--bg-card)]/20 hover:bg-[var(--text-primary)]/10 backdrop-blur-sm',
+                idBadge: 'bg-[var(--text-primary)]/10 text-[var(--text-primary)]'
+              };
+            case 'sketch':
+              return {
+                wrapper: 'font-[Architects_Daughter]',
+                card: 'bg-[var(--bg-card)] text-[var(--text-primary)]',
+                header: 'border-b-2 border-[var(--text-primary)] border-dashed bg-transparent',
+                grid: 'gap-0 bg-transparent',
+                cell: 'bg-transparent hover:bg-[var(--bg-app)] border border-[var(--text-primary)] text-[var(--text-primary)]',
+                idBadge: 'border-2 border-[var(--text-primary)] rounded-full px-2'
+              };
+            case 'minimal':
+              return {
+                wrapper: 'font-sans',
+                card: 'rounded-xl border border-[var(--border-color)] bg-[var(--bg-card)] shadow-sm',
+                header: 'border-b border-[var(--border-color)] bg-[var(--bg-app)] text-[var(--text-primary)]',
+                grid: 'gap-px bg-[var(--border-color)] border-y border-[var(--border-color)]',
+                cell: 'bg-[var(--bg-card)] hover:bg-[var(--bg-app)] text-[var(--text-primary)]',
+                idBadge: 'bg-[var(--border-color)] text-[var(--text-primary)]'
+              };
+            case 'organic':
+              return {
+                wrapper: 'font-sans',
+                card: 'rounded-2xl border-none bg-[var(--bg-card)] text-[var(--text-primary)]',
+                header: 'text-white',
+                grid: 'gap-px bg-[var(--border-color)] border-y border-[var(--border-color)]',
+                cell: 'bg-[var(--bg-card)] hover:bg-[var(--bg-app)] text-[var(--text-primary)]',
+                idBadge: 'bg-white/20 text-white'
+              };
+            case 'modern':
+            default:
+              return {
+                wrapper: 'font-sans',
+                card: 'rounded-2xl border-none bg-[var(--bg-card)] text-[var(--text-primary)]',
+                header: 'text-white',
+                grid: 'gap-px bg-[var(--border-color)] border-y border-[var(--border-color)]',
+                cell: 'bg-[var(--cell-bg)] hover:bg-[var(--cell-hover)] text-[var(--text-primary)]',
+                idBadge: 'bg-white/20 text-white'
+              };
+          }
+        };
+
+        const styles = getStyleClasses();
+        const headerStyle = (style === 'modern' || style === 'organic') ? { backgroundColor: accentColor } : {};
+        const cardStyle = style === 'sketch' ? { 
+          borderRadius: '255px 15px 225px 15px / 15px 225px 15px 255px', 
+          border: '2px solid var(--text-primary)',
+          boxShadow: '2px 3px 0px var(--text-secondary)'
+        } : {};
+
+        return (
+          <div className={`ticket-wrapper w-full mb-6 break-inside-avoid ${styles.wrapper}`}>
+            {creationTime && (
+              <div className="ticket-meta text-[10px] md:text-xs font-medium text-[var(--text-secondary)] mb-1.5 px-1 flex justify-between items-center opacity-80 uppercase tracking-wide">
+                <span>Created: {creationTime}</span>
+              </div>
+            )}
+
+            <div 
+              className={`ticket-card overflow-hidden transition-transform relative w-full ${styles.card}`}
+              style={{ 
+                boxShadow: style === 'pixel' ? undefined : (style === 'brutal' ? undefined : (style === 'sketch' ? undefined : 'var(--ticket-shadow)')),
+                fontSize: `calc(${scale} * clamp(1rem, 4vw, 10rem))`,
+                ...cardStyle
+              }}
+            >
+              <div 
+                className={`ticket-header px-[1em] py-[0.75em] flex justify-between items-center ${styles.header}`}
+                style={headerStyle}
+              >
+                <div>
+                  <div className="text-[0.6em] font-extrabold uppercase tracking-widest opacity-90 leading-none mb-1">{gameTitle}</div>
+                  <div className="text-[1.1em] font-bold leading-none">{playerName}</div>
+                </div>
+                <div className={`px-[0.6em] py-[0.2em] rounded-lg font-mono font-bold text-[0.8em] ${styles.idBadge}`}>
+                  #{id}
+                </div>
+              </div>
+
+              <div className={`ticket-grid grid grid-cols-9 ${styles.grid}`}>
+                {data.map((row, rIndex) => (
+                  <React.Fragment key={rIndex}>
+                    {row.map((num, cIndex) => {
+                      const cellKey = `${id}-${rIndex}-${cIndex}`;
+                      const isMarked = markedCells.has(cellKey);
+                      const isEmpty = num === 0;
+
+                      // Deterministic random generator for organic shapes
+                      const seed = id * 1337 + rIndex * 101 + cIndex * 7;
+                      const random = (offset: number) => {
+                         const x = Math.sin(seed + offset) * 10000;
+                         return x - Math.floor(x);
+                      };
+
+                      let marker = null;
+                      
+                      if (isMarked) {
+                        if (style === 'organic') {
+                          // Blob marker
+                          const r = (i: number) => 35 + Math.floor(random(i) * 50);
+                          const borderRadius = `${r(1)}% ${r(2)}% ${r(3)}% ${r(4)}% / ${r(5)}% ${r(6)}% ${r(7)}% ${r(8)}%`;
+                          const rotation = Math.floor(random(9) * 20 - 10);
+                          const scaleVal = 0.85 + random(10) * 0.15;
+                          
+                          marker = (
+                            <div 
+                              className="w-[90%] h-[80%] border-[3px] animate-[popIn_0.2s_ease-out_forwards]"
+                              style={{ 
+                                borderColor: accentColor, 
+                                backgroundColor: `rgba(var(--accent-rgb), 0.08)`, 
+                                borderRadius: borderRadius,
+                                transform: `rotate(${rotation}deg) scale(${scaleVal})`,
+                                boxShadow: `0 0 2px 0 rgba(var(--accent-rgb), 0.3)`,
+                                borderStyle: 'solid'
+                              }}
+                            />
+                          );
+                        } else if (style === 'pixel') {
+                          // Pixelated X marker behind text
+                           marker = (
+                            <div className="absolute inset-0 flex items-center justify-center opacity-40 z-0">
+                               <div className="w-[80%] h-[80%] bg-[var(--accent)] clip-pixel-x" 
+                                    style={{ 
+                                      clipPath: 'polygon(20% 0%, 0% 0%, 0% 20%, 30% 50%, 0% 80%, 0% 100%, 20% 100%, 50% 70%, 80% 100%, 100% 100%, 100% 80%, 70% 50%, 100% 20%, 100% 0%, 80% 0%, 50% 30%)' 
+                                    }}
+                               />
+                            </div>
+                          );
+                        } else if (style === 'classic') {
+                          marker = (
+                            <div 
+                              className="w-[85%] h-[85%] rounded-full border-2 animate-[popIn_0.2s_ease-out]"
+                              style={{ borderColor: 'red' }} 
+                            />
+                          );
+                        } else if (style === 'brutal') {
+                          marker = (
+                             <div className="absolute inset-0 bg-[var(--accent)] opacity-40 z-0 animate-[popIn_0.1s_ease-out]" />
+                          );
+                        } else if (style === 'sketch') {
+                          const rotation = Math.floor(random(9) * 20 - 10);
+                          marker = (
+                             <div 
+                               className="w-[90%] h-[90%] border-2 rounded-[50%] animate-[popIn_0.2s_ease-out]"
+                               style={{ 
+                                 borderColor: accentColor,
+                                 transform: `rotate(${rotation}deg)`,
+                                 borderRadius: '40% 60% 70% 30% / 50% 30% 60% 40%'
+                               }}
+                             />
+                          );
+                        } else if (style === 'glass') {
+                           marker = (
+                             <div 
+                               className="w-[60%] h-[60%] rounded-full animate-[popIn_0.3s_ease-out] relative"
+                             >
+                                <div className="absolute inset-0 rounded-full blur-[2px]" style={{ background: accentColor, opacity: 0.5 }}></div>
+                                <div className="absolute inset-[20%] rounded-full blur-[1px]" style={{ background: accentColor, opacity: 0.8 }}></div>
+                             </div>
+                          );
+                        } else {
+                          marker = (
+                             <div className="marked-indicator absolute inset-0 flex items-center justify-center pointer-events-none">
+                              <div 
+                                className="w-[75%] h-[75%] rounded-full border-2 animate-[popIn_0.2s_ease-out_forwards]"
+                                style={{ 
+                                  borderColor: accentColor, 
+                                  backgroundColor: `rgba(var(--accent-rgb), 0.15)` 
+                                }}
+                              />
+                            </div>
+                          );
+                        }
+                      }
+
+                      return (
+                        <div
+                          key={cIndex}
+                          onClick={() => !isEmpty && onToggleCell(rIndex, cIndex)}
+                          className={`
+                            grid-cell relative aspect-square flex items-center justify-center
+                            font-bold select-none
+                            transition-colors duration-200
+                            ${isEmpty ? 'opacity-60 pointer-events-none' : 'cursor-pointer'}
+                            ${styles.cell}
+                            ${isMarked && (style === 'pixel' || style === 'brutal') ? '' : ''}
+                          `}
+                          style={{ fontSize: '1.2em' }}
+                          role={isEmpty ? 'presentation' : 'button'}
+                          aria-label={isEmpty ? undefined : `Number ${num}`}
+                          aria-pressed={isMarked}
+                        >
+                          {isMarked && (style === 'pixel' || style === 'brutal' || style === 'glass') && marker}
+
+                          <span className="relative z-10">{num !== 0 ? num : ''}</span>
+                          
+                          {isMarked && (style !== 'pixel' && style !== 'brutal' && style !== 'glass') && (
+                             <div className="marked-indicator absolute inset-0 flex items-center justify-center pointer-events-none">
+                               {marker}
+                             </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </React.Fragment>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // --- COMPONENT: HELP MODAL ---
+      interface HelpModalProps {
+        isOpen: boolean;
+        onClose: () => void;
+        accentColor: string;
+      }
+
+      const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose, accentColor }) => {
+        const [selectedPrize, setSelectedPrize] = useState(null);
+        // Generate a random ticket once for visualization
+        const [demoTicket] = useState(generateTicket());
+
+        if (!isOpen) return null;
+
+        const isHighlighted = (r: number, c: number, prizeId: string | undefined): boolean => {
+          if (!prizeId) return false;
+          
+          switch (prizeId) {
+            case "Top Line": return r === 0;
+            case "Middle Line": return r === 1;
+            case "Bottom Line": return r === 2;
+            case "Full House": return true;
+            case "4 Corners": return (r === 0 && (c === 0 || c === 8)) || (r === 2 && (c === 0 || c === 8));
+            case "Temperature": return (r === 0 && c === 0) || (r === 2 && c === 8);
+            case "Breakfast": return c < 3;
+            case "Lunch": return c >= 3 && c < 6;
+            case "Dinner": return c >= 6;
+            case "Jawaani": return c < 5;
+            case "Budhapa": return c >= 5;
+            case "Queen's Corner": return c === 0; 
+            case "King's Corner": return c === 8;
+            case "Bamboo": return c === 4;
+            case "Star": return (r===1 && c===4) || ((r===0||r===2) && (c===0||c===8));
+            case "Pyramid": 
+              if (r===0 && c===4) return true;
+              if (r===1 && (c===3 || c===5)) return true;
+              if (r===2 && (c===2 || c===4 || c===6)) return true;
+              return false;
+            default: return false; 
+          }
+        };
+
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div 
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+              onClick={onClose}
+            />
+            
+            <div className="bg-[var(--bg-card)] w-full max-w-md rounded-2xl shadow-2xl overflow-hidden relative z-10 flex flex-col max-h-[90vh] animate-[popIn_0.2s_ease-out]">
+              <div className="flex justify-between items-center p-4 border-b border-[var(--border-color)]">
+                <h2 className="text-xl font-bold text-[var(--text-primary)]">Winning Patterns</h2>
+                <button onClick={onClose} className="p-2 rounded-full hover:bg-[var(--bg-app)] text-[var(--text-secondary)]">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="p-4 bg-[var(--bg-app)]">
+                <div className="grid grid-cols-9 gap-px border border-[var(--border-color)] bg-[var(--border-color)] rounded overflow-hidden aspect-[9/3] shadow-inner">
+                  {demoTicket.map((row, r) => (
+                    row.map((num, c) => {
+                      const active = isHighlighted(r, c, selectedPrize?.id);
+                      const hasNumber = num !== 0;
+
+                      return (
+                        <div 
+                          key={`${r}-${c}`} 
+                          className={`
+                            flex items-center justify-center text-[10px] sm:text-xs font-bold transition-all duration-200 select-none
+                            ${active 
+                              ? (hasNumber ? 'text-white scale-110 z-10 shadow-md' : 'bg-opacity-50 opacity-50')
+                              : 'bg-[var(--bg-card)] text-[var(--text-secondary)]'}
+                            ${!hasNumber && !active ? 'bg-[var(--bg-app)]' : 'bg-[var(--bg-card)]'}
+                          `}
+                          style={{ 
+                            backgroundColor: active ? accentColor : undefined,
+                            opacity: (active && !hasNumber) ? 0.3 : 1
+                          }}
+                        >
+                          {hasNumber ? num : ''}
+                        </div>
+                      );
+                    })
+                  ))}
+                </div>
+                
+                <div className="mt-4 text-center min-h-[4rem] flex flex-col justify-center items-center bg-[var(--bg-card)] p-3 rounded-xl border border-[var(--border-color)] shadow-sm">
+                  {selectedPrize ? (
+                    <>
+                      <span className="text-[10px] uppercase font-bold text-[var(--text-secondary)] tracking-wider mb-1">Winning Logic</span>
+                      <span className="font-semibold text-sm text-[var(--text-primary)] leading-tight">{selectedPrize.description}</span>
+                    </>
+                  ) : (
+                    <span className="text-[var(--text-secondary)] text-sm">Select a prize below to see details</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-2">
+                {PRIZE_DATA.map((prize) => (
+                  <button
+                    key={prize.id}
+                    onClick={() => setSelectedPrize(prize)}
+                    className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all mb-1 flex items-center justify-between group
+                      ${selectedPrize?.id === prize.id 
+                        ? 'bg-[var(--bg-app)] text-[var(--accent)] font-bold shadow-sm ring-1 ring-[var(--accent)]/20' 
+                        : 'text-[var(--text-primary)] hover:bg-[var(--bg-app)]'}
+                    `}
+                  >
+                    {prize.name}
+                    {selectedPrize?.id === prize.id && <span className="text-[10px] text-current transform scale-125">●</span>}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // --- MAIN APP ---
+      const App: React.FC = () => {
+        const [gameState, setGameState] = useState('setup');
+        const [showConfetti, setShowConfetti] = useState(false);
+        const [showHelp, setShowHelp] = useState(false);
+        const [showResetConfirm, setShowResetConfirm] = useState(false);
+        const [isMobileSheetOpen, setIsMobileSheetOpen] = useState(false);
+        const [customPrizes, setCustomPrizes] = useState([]);
+        const [newPrizeName, setNewPrizeName] = useState("");
+        const [ticketScale, setTicketScale] = useState(1);
+        const [showViewOptions, setShowViewOptions] = useState(false);
+        const [config, setConfig] = useState({
+          playerName: 'Player 1',
+          gameTitle: 'Family Night',
+          ticketCount: 1,
+          theme: 'light',
+          ticketStyle: 'modern',
+          activePrizes: DEFAULT_PRIZES
+        });
+        const [tickets, setTickets] = useState([]);
+        const [markedCells, setMarkedCells] = useState(new Set());
+        const [wonPrizes, setWonPrizes] = useState(new Set());
+        const [creationTime, setCreationTime] = useState("");
+
+        useEffect(() => {
+          document.body.setAttribute('data-theme', config.theme);
+        }, [config.theme]);
+
+        const handleStartGame = (mode) => {
+          const newTickets = generateTickets(config.ticketCount);
+          setTickets(newTickets);
+          setMarkedCells(new Set());
+          setWonPrizes(new Set());
+          setCreationTime(new Date().toLocaleString('en-US', {
+            weekday: 'short', month: 'short', day: 'numeric', 
+            hour: '2-digit', minute: '2-digit'
+          }));
+          
+          if (config.activePrizes.length === 0) {
+            setConfig(prev => ({ ...prev, activePrizes: ['Full House'] }));
+          }
+
+          setGameState('playing');
+          window.scrollTo(0, 0);
+
+          if (mode === 'print') {
+            setTimeout(() => {
+              window.print();
+            }, 300); 
+          }
+        };
+
+        const handlePrint = () => {
+          window.print();
+        };
+
+        const toggleCell = (ticketId, row, col) => {
+          const key = `${ticketId + 1}-${row}-${col}`;
+          setMarkedCells(prev => {
+            const next = new Set(prev);
+            if (next.has(key)) {
+              next.delete(key);
+            } else {
+              next.add(key);
+              if (navigator.vibrate) navigator.vibrate(5);
+            }
+            return next;
+          });
+        };
+
+        const togglePrize = (prizeId) => {
+          setWonPrizes(prev => {
+            const next = new Set(prev);
+            if (next.has(prizeId)) {
+              next.delete(prizeId);
+            } else {
+              next.add(prizeId);
+              triggerConfetti();
+              if (navigator.vibrate) navigator.vibrate([10, 30, 10]);
+            }
+            return next;
+          });
+        };
+
+        const addCustomPrize = () => {
+          if (!newPrizeName.trim()) return;
+          const newId = `custom-${Date.now()}`;
+          const newPrize = {
+            id: newId,
+            name: newPrizeName,
+            description: "Custom Prize"
+          };
+          setCustomPrizes([...customPrizes, newPrize]);
+          setConfig(prev => ({
+            ...prev,
+            activePrizes: [...prev.activePrizes, newId]
+          }));
+          setNewPrizeName("");
+        };
+
+        const triggerConfetti = () => {
+          setShowConfetti(true);
+          setTimeout(() => setShowConfetti(false), 3000);
+        };
+
+        const resetGame = () => {
+          setGameState('setup');
+          setShowResetConfirm(false);
+          setIsMobileSheetOpen(false);
+          setShowViewOptions(false);
+          setTicketScale(1);
+        };
+
+        const getAccentColor = () => {
+          const themeColors = {
+            light: '#007AFF',
+            dark: '#0A84FF',
+            cream: '#B06938',
+            neon: '#D900FF',
+            midnight: '#fbbf24',
+            forest: '#4ade80',
+            sunset: '#fcd34d',
+            ocean: '#0891b2',
+            candy: '#db2777',
+            retro: '#c8553d'
+          };
+          return themeColors[config.theme] || '#007AFF';
+        };
+
+        const allPrizes = [...PRIZE_DATA, ...customPrizes];
+        const THEMES = ['light', 'dark', 'cream', 'neon', 'midnight', 'forest', 'sunset', 'ocean', 'candy', 'retro'];
+        const STYLES = ['modern', 'classic', 'organic', 'pixel', 'minimal', 'brutal', 'glass', 'sketch'];
+
+        const renderPrizeList = () => (
+          <div className="flex flex-col">
+            {config.activePrizes.map(pId => {
+              const def = allPrizes.find(d => d.id === pId) || { id: pId, name: pId, description: '' };
+              const isWon = wonPrizes.has(pId);
+              return (
+                <div 
+                  key={pId}
+                  onClick={() => togglePrize(pId)}
+                  className={`flex items-center py-3 border-b border-[var(--border-color)] cursor-pointer group transition-all
+                    ${isWon ? 'opacity-50' : 'opacity-100'}
+                  `}
+                >
+                  <div className={`
+                    w-6 h-6 rounded-full border-2 mr-3 flex items-center justify-center transition-colors shrink-0
+                    ${isWon 
+                      ? 'bg-green-500 border-green-500 text-white' 
+                      : 'border-[var(--text-secondary)] group-hover:border-[var(--accent)]'}
+                  `}>
+                    {isWon && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4"><path d="M20 6L9 17l-5-5"/></svg>}
+                  </div>
+                  <div className="flex flex-col">
+                    <span className={`text-sm font-semibold ${isWon ? 'line-through' : ''}`}>{def.name}</span>
+                    <span className="text-[10px] text-[var(--text-secondary)] leading-tight">{def.description}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        );
+
+        return (
+          <div className="min-h-screen pb-safe">
+            {showConfetti && <Confetti />}
+
+            {/* HEADER */}
+            <header className="sticky top-0 z-30 bg-[var(--bg-app)]/80 backdrop-blur-md border-b border-[var(--border-color)] no-print">
+              <div className="w-full max-w-[98%] mx-auto px-4 py-3 flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                   {gameState === 'playing' && (
+                      <button 
+                        onClick={() => setShowResetConfirm(true)}
+                        className="p-2 -ml-2 rounded-full hover:bg-[var(--bg-card)] text-[var(--text-secondary)]"
+                      >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                      </button>
+                   )}
+                   <h1 className="text-xl font-bold tracking-tight">Tambola</h1>
+                </div>
+
+                <div className="flex gap-2 items-center">
+                  {gameState === 'playing' && (
+                    <>
+                       <button 
+                        onClick={() => setShowViewOptions(!showViewOptions)}
+                        className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${showViewOptions ? 'bg-[var(--accent)] text-white' : 'hover:bg-[var(--bg-card)]'}`}
+                        aria-label="View Options"
+                       >
+                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 21v-7m0-4V3m8 18v-9m0-4V3m8 18v-5m0-4V3M1 14h6m2-6h6m2 8h6"/></svg>
+                       </button>
+                    </>
+                  )}
+                  <button 
+                    onClick={() => setShowHelp(true)}
+                    className="w-10 h-10 rounded-full hover:bg-[var(--bg-card)] flex items-center justify-center font-bold text-lg"
+                    aria-label="Help"
+                  >
+                    ?
+                  </button>
+                </div>
+              </div>
+
+              {/* View Options Panel */}
+              {showViewOptions && gameState === 'playing' && (
+                <div className="border-t border-[var(--border-color)] bg-[var(--bg-card)] p-4 animate-[slideDown_0.2s_ease-out]">
+                  <div className="max-w-xl mx-auto space-y-5">
+                    <div className="flex items-center gap-4">
+                       <span className="text-sm font-bold w-12 text-[var(--text-secondary)] uppercase text-xs">Size</span>
+                       <span className="text-xs text-[var(--text-secondary)]">A</span>
+                       <input 
+                        type="range" 
+                        min="0.6" 
+                        max="1.4" 
+                        step="0.05"
+                        value={ticketScale} 
+                        onChange={(e) => setTicketScale(parseFloat(e.target.value))}
+                        className="flex-1 h-2 bg-[var(--border-color)] rounded-full appearance-none cursor-pointer"
+                       />
+                       <span className="text-lg font-bold">A</span>
+                    </div>
+
+                    <div className="space-y-2">
+                      <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Theme</span>
+                      <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+                        {THEMES.map(t => (
+                          <button
+                            key={t}
+                            onClick={() => setConfig({...config, theme: t})}
+                            className={`
+                              flex-shrink-0 px-3 py-2 rounded-lg text-xs font-bold border transition-all capitalize
+                              ${config.theme === t ? 'border-[var(--accent)] shadow-sm scale-105' : 'border-transparent opacity-70 hover:opacity-100'}
+                            `}
+                            style={{
+                              background: t === 'light' ? '#F5F5F7' : t === 'dark' ? '#111' : t === 'cream' ? '#F0EAD6' : t === 'neon' ? '#000' : t === 'midnight' ? '#0f172a' : t === 'forest' ? '#1a2f23' : t === 'ocean' ? '#ecfeff' : t === 'candy' ? '#fff1f2' : t === 'retro' ? '#eaddcf' : '#4a1d24',
+                              color: t === 'light' ? '#000' : t === 'cream' ? '#4A3B2A' : t === 'forest' ? '#e2e8f0' : t === 'midnight' ? '#f8fafc' : t === 'sunset' ? '#ffd1d6' : t === 'neon' ? '#00FF9C' : t === 'ocean' ? '#164e63' : t === 'candy' ? '#be185d' : t === 'retro' ? '#5e503f' : '#FFF'
+                            }}
+                          >
+                            {t}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Style</span>
+                      <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+                        {STYLES.map(s => (
+                          <button
+                            key={s}
+                            onClick={() => setConfig({...config, ticketStyle: s})}
+                            className={`
+                              flex-shrink-0 px-3 py-2 rounded-lg text-xs font-bold border transition-all capitalize
+                              ${config.ticketStyle === s 
+                                ? 'bg-[var(--bg-app)] border-[var(--accent)] text-[var(--accent)]' 
+                                : 'border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--bg-app)]'}
+                            `}
+                          >
+                            {s}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3 pt-2">
+                       <button 
+                          onClick={handlePrint}
+                          className="flex-1 py-2.5 bg-[var(--bg-app)] text-[var(--accent)] text-sm font-bold rounded-lg border border-[var(--border-color)] hover:bg-[var(--cell-hover)] transition-colors"
+                       >
+                         Print Sheet
+                       </button>
+                       <button 
+                          onClick={() => { setTicketScale(1); setShowViewOptions(false); }}
+                          className="flex-1 py-2.5 bg-[var(--bg-app)] text-[var(--text-secondary)] text-sm font-bold rounded-lg border border-[var(--border-color)] hover:bg-[var(--cell-hover)] transition-colors"
+                       >
+                         Reset View
+                       </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </header>
+
+            <main className="w-full max-w-[98%] mx-auto px-4 py-6 pb-24">
+              
+              {gameState === 'setup' && (
+                <div className="animate-[popIn_0.3s_ease-out] w-full setup-container">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="bg-[var(--bg-card)] rounded-2xl p-6 shadow-lg h-fit">
+                      <h3 className="text-sm font-bold uppercase text-[var(--text-secondary)] tracking-wider mb-4 border-b border-[var(--border-color)] pb-2">Details</h3>
+                      <div className="space-y-4 mb-6">
+                        <div className="space-y-1">
+                           <label className="text-xs font-semibold text-[var(--text-secondary)]">Player Name</label>
+                           <input 
+                            type="text" 
+                            value={config.playerName}
+                            onChange={e => setConfig({...config, playerName: e.target.value})}
+                            placeholder="Player Name"
+                            className="w-full p-3 bg-[var(--bg-app)] rounded-xl outline-none focus:ring-2 focus:ring-[var(--accent)] transition-all font-medium"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                           <label className="text-xs font-semibold text-[var(--text-secondary)]">Game Title</label>
+                           <input 
+                            type="text" 
+                            value={config.gameTitle}
+                            onChange={e => setConfig({...config, gameTitle: e.target.value})}
+                            placeholder="Game Title"
+                            className="w-full p-3 bg-[var(--bg-app)] rounded-xl outline-none focus:ring-2 focus:ring-[var(--accent)] transition-all font-medium"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mb-2">
+                        <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-2">Number of Tickets</label>
+                        <div className="flex bg-[var(--bg-app)] p-1.5 rounded-xl gap-1">
+                          {[1,2,3,4,5,6].map(num => (
+                            <button
+                              key={num}
+                              onClick={() => setConfig({...config, ticketCount: num})}
+                              className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                                config.ticketCount === num 
+                                  ? 'bg-[var(--text-primary)] text-[var(--bg-card)] shadow-md' 
+                                  : 'text-[var(--text-secondary)] hover:bg-black/5 dark:hover:bg-white/5'
+                              }`}
+                            >
+                              {num}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-[var(--bg-card)] rounded-2xl p-6 shadow-lg h-fit">
+                      <h3 className="text-sm font-bold uppercase text-[var(--text-secondary)] tracking-wider mb-4 border-b border-[var(--border-color)] pb-2">Appearance</h3>
+                      <div className="mb-6">
+                         <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-2">Color Theme</label>
+                         <div className="grid grid-cols-3 gap-2">
+                            {THEMES.map(t => (
+                              <button
+                                key={t}
+                                onClick={() => setConfig({...config, theme: t})}
+                                className={`
+                                  py-3 rounded-xl text-xs font-bold border-2 transition-all capitalize relative overflow-hidden group
+                                  ${config.theme === t ? 'border-[var(--accent)] opacity-100 scale-105 shadow-md' : 'border-transparent opacity-80 hover:opacity-100'}
+                                `}
+                                style={{
+                                  background: t === 'light' ? '#F5F5F7' : t === 'dark' ? '#111' : t === 'cream' ? '#F0EAD6' : t === 'neon' ? '#000' : t === 'midnight' ? '#0f172a' : t === 'forest' ? '#1a2f23' : t === 'ocean' ? '#ecfeff' : t === 'candy' ? '#fff1f2' : t === 'retro' ? '#eaddcf' : '#4a1d24',
+                                  color: t === 'light' ? '#000' : t === 'cream' ? '#4A3B2A' : t === 'forest' ? '#e2e8f0' : t === 'midnight' ? '#f8fafc' : t === 'sunset' ? '#ffd1d6' : t === 'neon' ? '#00FF9C' : t === 'ocean' ? '#164e63' : t === 'candy' ? '#be185d' : t === 'retro' ? '#5e503f' : '#FFF'
+                                }}
+                              >
+                                <span className="relative z-10">{t}</span>
+                                <div 
+                                   className="absolute bottom-1 right-1 w-2 h-2 rounded-full"
+                                   style={{
+                                     backgroundColor: 
+                                      t === 'light' ? '#007AFF' :
+                                      t === 'dark' ? '#0A84FF' :
+                                      t === 'cream' ? '#B06938' :
+                                      t === 'neon' ? '#D900FF' :
+                                      t === 'midnight' ? '#fbbf24' :
+                                      t === 'forest' ? '#4ade80' :
+                                      t === 'ocean' ? '#0891b2' :
+                                      t === 'candy' ? '#db2777' :
+                                      t === 'retro' ? '#c8553d' :
+                                      '#fcd34d'
+                                   }}
+                                />
+                              </button>
+                            ))}
+                         </div>
+                      </div>
+
+                      <div>
+                         <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-2">Ticket Style</label>
+                         <div className="grid grid-cols-2 gap-2">
+                            {STYLES.map(s => (
+                              <button
+                                key={s}
+                                onClick={() => setConfig({...config, ticketStyle: s})}
+                                className={`
+                                  py-3 px-2 rounded-xl text-xs font-bold border transition-all capitalize
+                                  ${config.ticketStyle === s 
+                                    ? 'bg-[var(--bg-app)] border-[var(--accent)] text-[var(--accent)]' 
+                                    : 'border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--bg-app)]'}
+                                `}
+                              >
+                                {s}
+                              </button>
+                            ))}
+                         </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-6">
+                      <div className="bg-[var(--bg-card)] rounded-2xl p-6 shadow-lg flex-1 flex flex-col min-h-[300px]">
+                        <h3 className="text-sm font-bold uppercase text-[var(--text-secondary)] tracking-wider mb-4 border-b border-[var(--border-color)] pb-2">Prizes</h3>
+                        
+                        <div className="flex gap-2 mb-4">
+                          <input 
+                            type="text" 
+                            value={newPrizeName}
+                            onChange={(e) => setNewPrizeName(e.target.value)}
+                            placeholder="Add custom prize..."
+                            className="flex-1 p-2 text-sm bg-[var(--bg-app)] rounded-lg outline-none focus:ring-1 focus:ring-[var(--accent)]"
+                            onKeyDown={(e) => e.key === 'Enter' && addCustomPrize()}
+                          />
+                          <button 
+                            onClick={addCustomPrize}
+                            disabled={!newPrizeName.trim()}
+                            className="px-3 bg-[var(--accent)] text-white rounded-lg font-bold text-sm disabled:opacity-50"
+                          >
+                            Add
+                          </button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                          <div className="grid grid-cols-1 gap-2">
+                            {allPrizes.map(prize => {
+                               const isSelected = config.activePrizes.includes(prize.id);
+                               return (
+                                 <label 
+                                  key={prize.id}
+                                  className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer border transition-all text-xs font-medium
+                                    ${isSelected 
+                                      ? 'bg-[var(--bg-app)] border-[var(--accent)] text-[var(--accent)] font-bold' 
+                                      : 'border-transparent hover:bg-[var(--bg-app)]'}
+                                  `}
+                                 >
+                                   <input 
+                                      type="checkbox" 
+                                      className="hidden"
+                                      checked={isSelected}
+                                      onChange={() => {
+                                        const newPrizes = isSelected 
+                                          ? config.activePrizes.filter(p => p !== prize.id)
+                                          : [...config.activePrizes, prize.id];
+                                        setConfig({...config, activePrizes: newPrizes});
+                                      }}
+                                   />
+                                   <div className="flex-1">
+                                     <div>{prize.name}</div>
+                                     <div className="text-[9px] opacity-60 font-normal truncate">{prize.description}</div>
+                                   </div>
+                                   <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${isSelected ? 'bg-[var(--accent)] border-[var(--accent)]' : 'border-[var(--text-secondary)]'}`}>
+                                      {isSelected && <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" /></svg>}
+                                   </div>
+                                 </label>
+                               )
+                            })}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <button 
+                          onClick={() => handleStartGame('play')}
+                          className="w-full py-4 bg-[var(--accent)] text-white font-bold rounded-xl shadow-[0_8px_20px_rgba(var(--accent-rgb),0.3)] active:scale-95 transition-transform text-lg"
+                        >
+                          Start Game
+                        </button>
+                        <button 
+                          onClick={() => handleStartGame('print')}
+                          className="w-full py-4 bg-transparent text-[var(--accent)] border-2 border-[var(--accent)] font-bold rounded-xl active:bg-[var(--bg-app)] transition-colors text-lg"
+                        >
+                          Print Sheet
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {gameState === 'playing' && (
+                <div className="flex flex-col lg:flex-row gap-8 items-start">
+                  <div className="flex-1 w-full print-container transition-all duration-300 grid grid-cols-1 gap-8 items-start" id="tickets-area">
+                    {tickets.map((ticket, index) => (
+                      <Ticket
+                        key={index}
+                        id={index + 1}
+                        data={ticket}
+                        gameTitle={config.gameTitle}
+                        playerName={config.playerName}
+                        markedCells={markedCells}
+                        onToggleCell={(r, c) => toggleCell(index, r, c)}
+                        accentColor={getAccentColor()}
+                        scale={ticketScale}
+                        creationTime={creationTime}
+                        style={config.ticketStyle}
+                      />
+                    ))}
+                  </div>
+
+                  <div className="hidden lg:block w-72 sticky top-24 no-print shrink-0">
+                     <div className="bg-[var(--bg-card)] rounded-2xl p-6 shadow-lg max-h-[80vh] overflow-y-auto">
+                        <div className="flex justify-between items-center mb-4">
+                          <h3 className="font-bold text-lg">Prizes</h3>
+                          <button onClick={handlePrint} className="text-xs font-bold text-[var(--accent)] uppercase hover:underline">Print</button>
+                        </div>
+                        {renderPrizeList()}
+                     </div>
+                  </div>
+                </div>
+              )}
+            </main>
+
+            {gameState === 'playing' && (
+              <>
+                <button 
+                  onClick={() => setIsMobileSheetOpen(true)}
+                  className={`
+                    fab-container fixed bottom-8 right-6 z-40 bg-[var(--text-primary)] text-[var(--bg-card)] 
+                    px-6 py-3.5 rounded-full font-bold shadow-2xl flex items-center gap-2 transition-transform lg:hidden
+                    ${isMobileSheetOpen ? 'scale-0' : 'scale-100'}
+                  `}
+                >
+                  <span className="text-xl">🏆</span> Prizes
+                </button>
+
+                <div 
+                  className={`
+                    fixed inset-0 bg-black/40 z-50 transition-opacity lg:hidden no-print backdrop-blur-sm
+                    ${isMobileSheetOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
+                  `}
+                  onClick={() => setIsMobileSheetOpen(false)}
+                />
+
+                <div 
+                  className={`
+                    fixed bottom-0 left-0 right-0 bg-[var(--bg-card)] rounded-t-[2rem] z-50 p-6 pt-0 
+                    max-h-[80vh] flex flex-col transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] lg:hidden no-print
+                    ${isMobileSheetOpen ? 'translate-y-0' : 'translate-y-full'}
+                  `}
+                  style={{ boxShadow: '0 -10px 40px rgba(0,0,0,0.2)' }}
+                >
+                  <div className="w-12 h-1.5 bg-[var(--text-secondary)]/20 rounded-full mx-auto my-3 shrink-0" />
+                  <h2 className="text-xl font-bold mb-4 shrink-0">Prizes</h2>
+                  <div className="overflow-y-auto pb-8">
+                    {renderPrizeList()}
+                  </div>
+                </div>
+              </>
+            )}
+
+            <HelpModal 
+              isOpen={showHelp} 
+              onClose={() => setShowHelp(false)} 
+              accentColor={getAccentColor()}
+            />
+
+            {showResetConfirm && (
+              <div className="modal-overlay fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                 <div className="bg-[var(--bg-card)] w-full max-w-sm rounded-2xl p-6 shadow-2xl animate-[popIn_0.2s_ease-out] text-center">
+                   <h3 className="text-xl font-bold mb-2">End Game?</h3>
+                   <p className="text-[var(--text-secondary)] mb-6 text-sm">Are you sure you want to end this game and return to setup?</p>
+                   <div className="flex gap-3">
+                     <button 
+                      onClick={() => setShowResetConfirm(false)}
+                      className="flex-1 py-3 bg-[var(--bg-app)] rounded-xl font-bold text-[var(--text-primary)]"
+                     >
+                       Cancel
+                     </button>
+                     <button 
+                      onClick={resetGame}
+                      className="flex-1 py-3 bg-red-500 text-white rounded-xl font-bold shadow-lg shadow-red-500/30"
+                     >
+                       End Game
+                     </button>
+                   </div>
+                 </div>
+              </div>
+            )}
+          </div>
+        );
+      };
+
+      const rootElement = document.getElementById('root');
+      if (rootElement) {
+        const root = ReactDOM.createRoot(rootElement);
+        root.render(<App />);
+      }
+    </script>
+</body>
+</html>
